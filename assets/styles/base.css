@@ -1,0 +1,138 @@
+/* Custom enhancements on top of Bootstrap */
+.grayscale {
+    filter: grayscale(100%);
+}
+
+.hover-white:hover {
+    color: white !important;
+}
+
+/* Utility classes */
+.tracking-wider {
+    letter-spacing: 0.1em;
+}
+
+/* Override Bootstrap primary if needed to match brand */
+.btn-primary {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.text-primary {
+    color: var(--color-primary) !important;
+}
+
+.bg-primary {
+    background-color: var(--color-primary) !important;
+}
+
+/* Styles des widgets de formulaire */
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: #ffffff;
+    font-family: inherit;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    transform: translateY(-1px);
+}
+
+.form-control::placeholder {
+    color: #999;
+}
+
+/* Styles des cases à cocher et boutons radio */
+input[type="checkbox"],
+input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    margin-right: 0.5rem;
+    cursor: pointer;
+    accent-color: var(--color-primary);
+}
+
+/* Titres */
+h1 {
+    font-size: 1.75rem !important;
+}
+
+h2 {
+    font-size: 1.5rem !important;
+}
+
+h3 {
+    font-size: 1.25rem !important;
+}
+
+.page-header {
+    text-align: center;
+    padding: 4rem 0 2rem;
+}
+
+.page-header h1 {
+    font-size: 3rem;
+    color: var(--color-primary);
+    margin-bottom: 1rem;
+}
+
+.page-header p {
+    font-size: 1.25rem;
+    color: var(--color-text-light);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Additional Utilities */
+.hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.hover-lift:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15) !important;
+}
+
+.rotate-12 {
+    transform: rotate(12deg);
+}
+
+.shadow-2xl {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+}
+
+.opacity-10 {
+    opacity: 0.1 !important;
+}
+
+.tracking-widest {
+    letter-spacing: 0.2em;
+}
+
+.transition-all {
+    transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    /* En-têtes de page mobile */
+    .page-header h1 {
+        font-size: 2rem !important;
+    }
+
+    .page-header p {
+        font-size: 1rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-header h1 {
+        font-size: 1.75rem !important;
+    }
+}

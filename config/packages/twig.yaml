@@ -1,0 +1,21 @@
+twig:
+    file_name_pattern: '*.twig'
+    form_themes: ['bootstrap_5_layout.html.twig']
+
+when@dev:
+    twig:
+        # Aide au débogage en dev
+        debug: '%kernel.debug%'
+        strict_variables: true
+
+when@test:
+    twig:
+        strict_variables: true
+
+when@prod:
+    twig:
+        # Désactive le mode debug en production pour de meilleures performances
+        debug: false
+        strict_variables: false
+        # Active le cache des templates (automatique mais explicite pour la clarté)
+        cache: '%kernel.cache_dir%/twig'

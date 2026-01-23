@@ -1,0 +1,59 @@
+/* Homepage Specific Styles */
+
+/* Slider Content */
+.slide-content h1 {
+    font-size: 1.75rem;
+}
+
+.slide-content p {
+    font-size: 0.9rem;
+}
+
+/* Featured Products Section */
+.featured-products h2 {
+    font-size: 1.75rem;
+}
+
+/* Grille de produits centrée pour la page d'accueil */
+.products-grid-centered {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 300px));
+    justify-content: center;
+}
+
+/* Infinite Logo Scroll */
+.logo-scroll-container {
+    padding: 2rem 0;
+    position: relative;
+    width: 100%;
+}
+
+.logo-scroll-track {
+    display: flex;
+    width: max-content;
+    animation: scrollLogos 30s linear infinite;
+}
+
+.logo-scroll-item {
+    padding: 0 3rem;
+    flex-shrink: 0;
+}
+
+@keyframes scrollLogos {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(calc(-100% / 3));
+    }
+}
+
+.logo-scroll-container:hover .logo-scroll-track {
+    animation-play-state: paused;
+}
+
+.hover-color:hover {
+    filter: grayscale(0) !important;
+    opacity: 1 !important;
+    transform: scale(1.1);
+}

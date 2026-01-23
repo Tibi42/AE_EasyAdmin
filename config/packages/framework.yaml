@@ -1,0 +1,32 @@
+# see https://symfony.com/doc/current/reference/configuration/framework.html
+framework:
+    secret: '%env(APP_SECRET)%'
+
+    # Note that the session will be started ONLY if you read or write from it.
+    session:
+        cookie_secure: auto
+        cookie_samesite: lax
+        cookie_httponly: true
+        handler_id: null
+
+    # Active les fragments ESI pour le cache partiel de pages
+    #esi: true
+    #fragments: true
+    
+    # Configuration du cache HTTP
+    http_cache:
+        enabled: false  # Activé uniquement en prod
+
+when@test:
+    framework:
+        test: true
+        session:
+            storage_factory_id: session.storage.factory.mock_file
+
+when@prod:
+    framework:
+        # Active le cache HTTP en production
+        http_cache:
+            enabled: true
+            # Durée de vie par défaut du cache (5 minutes)
+            default_ttl: 300

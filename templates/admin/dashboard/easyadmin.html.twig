@@ -1,0 +1,256 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Dashboard Administrateur{% endblock %}
+
+{% block main %}
+	<div class="container-fluid">
+		<!-- Statistiques de Ventes -->
+		<div class="p-4 rounded-4 mb-5 text-white shadow" style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);">
+			<h2 class="h4 mb-4 d-flex align-items-center gap-2">
+				<i class="fas fa-chart-line"></i>
+				Statistiques de Ventes
+			</h2>
+			<div class="row g-3">
+				<div class="col-sm-6 col-lg-3">
+					<div class="bg-white bg-opacity-10 p-3 rounded-3 h-100 backdrop-blur" style="backdrop-filter: blur(10px);">
+						<div class="d-flex align-items-center gap-2 mb-2 opacity-75">
+							<i class="fas fa-euro-sign fs-5"></i>
+							<span class="small">CA Total</span>
+						</div>
+						<p class="h2 fw-bold mb-0 text-truncate">{{ sales_stats.total_revenue|number_format(2, ',', ' ') }} €</p>
+					</div>
+				</div>
+				<div class="col-sm-6 col-lg-3">
+					<div class="bg-white bg-opacity-10 p-3 rounded-3 h-100 backdrop-blur" style="backdrop-filter: blur(10px);">
+						<div class="d-flex align-items-center gap-2 mb-2 opacity-75">
+							<i class="fas fa-calendar-alt fs-5"></i>
+							<span class="small">CA ce mois</span>
+						</div>
+						<p class="h2 fw-bold mb-0 text-truncate">{{ sales_stats.monthly_revenue|number_format(2, ',', ' ') }} €</p>
+					</div>
+				</div>
+				<div class="col-sm-6 col-lg-3">
+					<div class="bg-white bg-opacity-10 p-3 rounded-3 h-100 backdrop-blur" style="backdrop-filter: blur(10px);">
+						<div class="d-flex align-items-center gap-2 mb-2 opacity-75">
+							<i class="fas fa-clock fs-5"></i>
+							<span class="small">CA aujourd'hui</span>
+						</div>
+						<p class="h2 fw-bold mb-0 text-truncate">{{ sales_stats.today_revenue|number_format(2, ',', ' ') }} €</p>
+					</div>
+				</div>
+				<div class="col-sm-6 col-lg-3">
+					<div class="bg-white bg-opacity-10 p-3 rounded-3 h-100 backdrop-blur" style="backdrop-filter: blur(10px);">
+						<div class="d-flex align-items-center gap-2 mb-2 opacity-75">
+							<i class="fas fa-shopping-basket fs-5"></i>
+							<span class="small">Panier moyen</span>
+						</div>
+						<p class="h2 fw-bold mb-0 text-truncate">{{ sales_stats.average_order|number_format(2, ',', ' ') }} €</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Graphiques de ventes -->
+		<div class="row g-4 mb-5">
+			<!-- Graphique des 7 derniers jours -->
+			<div class="col-lg-8">
+				<div class="card h-100 border-0 shadow-sm rounded-4 p-4">
+					<h3 class="h5 text-primary mb-4">
+						<i class="fas fa-chart-bar me-2"></i>Ventes des 7 derniers jours
+					</h3>
+					<div class="d-flex align-items-end justify-content-between border-bottom pb-3 mb-3" style="height: 200px;">
+						{% set max_revenue = 1 %}
+						{% for day in sales_last_7_days %}
+							{% if day.revenue > max_revenue %}
+								{% set max_revenue = day.revenue %}
+							{% endif %}
+						{% endfor %}
+						{% for day in sales_last_7_days %}
+							{% set height = max_revenue > 0 ? (day.revenue / max_revenue * 150) : 0 %}
+							<div class="flex-grow-1 d-flex flex-column align-items-center gap-2 mx-1">
+								<span class="x-small text-muted" style="font-size: 0.7rem;">{{ day.revenue|number_format(0, ',', ' ') }}€</span>
+								<div class="w-100 rounded-top bg-primary bg-gradient transition-all" style="height: {{ height > 5 ? height : 5 }}px; max-width: 40px;"></div>
+							</div>
+						{% endfor %}
+					</div>
+					<div class="d-flex justify-content-between">
+						{% for day in sales_last_7_days %}
+							<div class="text-center flex-grow-1">
+								<span class="small text-muted d-block">{{ day.day }}</span>
+								<span class="x-small text-muted" style="font-size: 0.65rem;">{{ day.date }}</span>
+							</div>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+
+			<!-- Répartition par statut -->
+			<div class="col-lg-4">
+				<div class="card h-100 border-0 shadow-sm rounded-4 p-4">
+					<h3 class="h5 text-primary mb-4">
+						<i class="fas fa-pie-chart me-2"></i>Commandes par statut
+					</h3>
+					<div class="d-flex flex-column gap-3">
+						{% set status_colors = {
+							'pending': '#f59e0b',
+							'paid': '#10b981',
+							'confirmed': '#10b981',
+							'shipped': '#8b5cf6',
+							'delivered': '#3b82f6',
+							'cancelled': '#ef4444'
+						} %}
+						{% set status_labels = {
+							'pending': 'En attente',
+							'paid': 'Payée',
+							'confirmed': 'Confirmée',
+							'shipped': 'Expédiée',
+							'delivered': 'Livrée',
+							'cancelled': 'Annulée'
+						} %}
+						{% for status, count in sales_stats.orders_by_status %}
+							<div class="d-flex align-items-center gap-3">
+								<div class="rounded-circle" style="width: 12px; height: 12px; background-color: {{ status_colors[status]|default('#6b7280') }};"></div>
+								<span class="flex-grow-1 small">{{ status_labels[status]|default(status) }}</span>
+								<span class="badge rounded-pill" style="background-color: {{ status_colors[status]|default('#6b7280') }}20; color: {{ status_colors[status]|default('#6b7280') }};">{{ count }}</span>
+							</div>
+						{% else %}
+							<p class="text-muted text-center py-4">Aucune commande</p>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Ventes mensuelles et Top produits -->
+		<div class="row g-4 mb-5">
+			<!-- Graphique des 6 derniers mois -->
+			<div class="col-lg-6">
+				<div class="card h-100 border-0 shadow-sm rounded-4 p-4">
+					<h3 class="h5 text-primary mb-4">
+						<i class="fas fa-chart-area me-2"></i>Évolution sur 6 mois
+					</h3>
+					<div class="d-flex align-items-end justify-content-between border-bottom pb-3 mb-3" style="height: 180px;">
+						{% set max_monthly = 1 %}
+						{% for month in sales_last_6_months %}
+							{% if month.revenue > max_monthly %}
+								{% set max_monthly = month.revenue %}
+							{% endif %}
+						{% endfor %}
+						{% for month in sales_last_6_months %}
+							{% set height = max_monthly > 0 ? (month.revenue / max_monthly * 130) : 0 %}
+							<div class="flex-grow-1 d-flex flex-column align-items-center gap-2">
+								<span class="small text-muted" style="font-size: 0.7rem;">{{ month.revenue|number_format(0, ',', ' ') }}€</span>
+								<div class="w-100 rounded-top transition-all" style="height: {{ height > 5 ? height : 5 }}px; background: linear-gradient(180deg, #10b981 0%, #059669 100%);"></div>
+							</div>
+						{% endfor %}
+					</div>
+					<div class="d-flex justify-content-between">
+						{% for month in sales_last_6_months %}
+							<div class="text-center flex-grow-1">
+								<span class="small text-muted">{{ month.month }}</span>
+							</div>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+
+			<!-- Top produits vendus -->
+			<div class="col-lg-6">
+				<div class="card h-100 border-0 shadow-sm rounded-4 p-4">
+					<h3 class="h5 text-primary mb-4">
+						<i class="fas fa-trophy me-2" style="color: #f59e0b;"></i>Top 5 produits
+					</h3>
+					{% if top_products|length > 0 %}
+						<div class="d-flex flex-column gap-2">
+							{% for idx, product in top_products %}
+								<div class="d-flex align-items-center gap-3 p-2 bg-light rounded-3">
+									<div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold small" style="width: 32px; height: 32px; background: {{ idx == 0 ? 'linear-gradient(135deg, #f59e0b, #d97706)' : (idx == 1 ? 'linear-gradient(135deg, #9ca3af, #6b7280)' : (idx == 2 ? 'linear-gradient(135deg, #d97706, #92400e)' : 'var(--bs-primary)')) }};">
+										{{ idx + 1 }}
+									</div>
+									<div class="flex-grow-1 min-w-0">
+										<p class="mb-0 fw-medium text-truncate">{{ product.name }}</p>
+										<p class="mb-0 small text-muted">{{ product.totalSold }} vendus</p>
+									</div>
+									<span class="fw-bold text-primary">{{ product.totalRevenue|number_format(0, ',', ' ') }} €</span>
+								</div>
+							{% endfor %}
+						</div>
+					{% else %}
+						<p class="text-muted text-center py-5">Aucune vente enregistrée</p>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+
+		<!-- Statistiques Grid -->
+		<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4 mb-5">
+			<div class="col">
+				<a href="{{ ea_url().setController('App\\Controller\\Admin\\Crud\\ProductCrudController') }}" class="card border-0 shadow-sm rounded-4 h-100 text-decoration-none overflow-hidden transition-all hover-lift" style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);">
+					<div class="card-body p-4 text-white">
+						<div class="display-4 mb-2 opacity-75">📦</div>
+						<h3 class="h5 mb-2 opacity-75">Produits</h3>
+						<p class="display-5 fw-bold mb-3">{{ stats.total_products }}</p>
+						<span class="text-decoration-underline small">Voir tous →</span>
+					</div>
+				</a>
+			</div>
+
+			<div class="col">
+				<a href="{{ ea_url().setController('App\\Controller\\Admin\\Crud\\UserCrudController') }}" class="card border-0 shadow-sm rounded-4 h-100 text-decoration-none overflow-hidden transition-all hover-lift" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+					<div class="card-body p-4 text-white">
+						<div class="display-4 mb-2 opacity-75">👥</div>
+						<h3 class="h5 mb-2 opacity-75">Utilisateurs</h3>
+						<p class="display-5 fw-bold mb-3">{{ stats.total_users }}</p>
+						<span class="text-decoration-underline small">Voir tous →</span>
+					</div>
+				</a>
+			</div>
+
+			<div class="col">
+				<a href="{{ ea_url().setController('App\\Controller\\Admin\\Crud\\OrderCrudController') }}" class="card border-0 shadow-sm rounded-4 h-100 text-decoration-none overflow-hidden transition-all hover-lift" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+					<div class="card-body p-4 text-white">
+						<div class="display-4 mb-2 opacity-75">🛒</div>
+						<h3 class="h5 mb-2 opacity-75">Commandes</h3>
+						<p class="display-5 fw-bold mb-3">{{ stats.total_orders }}</p>
+						<span class="text-decoration-underline small">Voir toutes →</span>
+					</div>
+				</a>
+			</div>
+
+			<div class="col">
+				<a href="{{ ea_url().setController('App\\Controller\\Admin\\Crud\\TestimonialCrudController') }}" class="card border-0 shadow-sm rounded-4 h-100 text-decoration-none overflow-hidden transition-all hover-lift" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
+					<div class="card-body p-4 text-white">
+						<div class="display-4 mb-2 opacity-75">⭐</div>
+						<h3 class="h5 mb-2 opacity-75">Témoignages</h3>
+						<p class="display-5 fw-bold mb-3">{{ stats.total_testimonials|default(0) }}</p>
+						<span class="text-decoration-underline small">Gérer →</span>
+					</div>
+				</a>
+			</div>
+
+			<div class="col">
+				<a href="{{ ea_url().setController('App\\Controller\\Admin\\Crud\\ProductCrudController') }}" class="card border-0 shadow-sm rounded-4 h-100 text-decoration-none overflow-hidden transition-all hover-lift" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+					<div class="card-body p-4 text-white">
+						<div class="display-4 mb-2 opacity-75">⚠️</div>
+						<h3 class="h5 mb-2 opacity-75">Stock faible</h3>
+						<p class="display-5 fw-bold mb-0">{{ stats.low_stock_products }}</p>
+						<span class="small mb-3 d-block opacity-75">Produits à réapprovisionner</span>
+						<span class="text-decoration-underline small">Voir tous →</span>
+					</div>
+				</a>
+			</div>
+
+			<div class="col">
+				<a href="{{ ea_url().setController('App\\Controller\\Admin\\Crud\\NewsletterCrudController') }}" class="card border-0 shadow-sm rounded-4 h-100 text-decoration-none overflow-hidden transition-all hover-lift" style="background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);">
+					<div class="card-body p-4 text-white">
+						<div class="display-4 mb-2 opacity-75">📧</div>
+						<h3 class="h5 mb-2 opacity-75">Newsletter</h3>
+						<p class="display-5 fw-bold mb-0">{{ stats.total_newsletter|default(0) }}</p>
+						<span class="small mb-3 d-block opacity-75">Abonnés actifs</span>
+						<span class="text-decoration-underline small">Gérer →</span>
+					</div>
+				</a>
+			</div>
+		</div>
+	</div>
+{% endblock %}

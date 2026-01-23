@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mot de passe oublié - Auxilia E-commerce
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<div class="auth-form enhanced">
+			<div class="auth-header">
+				<h1>Mot de passe oublié</h1>
+				<p class="auth-subtitle">Entrez votre email pour recevoir un lien de réinitialisation</p>
+			</div>
+
+			{% for flash_error in app.flashes('error') %}
+				<div class="alert alert-danger" style="margin-bottom: 1.5rem;">{{ flash_error }}</div>
+			{% endfor %}
+
+			{% for flash_success in app.flashes('success') %}
+				<div class="alert" style="background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; margin-bottom: 1.5rem;">
+					{{ flash_success }}
+				</div>
+			{% endfor %}
+
+			{% for flash_info in app.flashes('info') %}
+				<div class="alert" style="background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; margin-bottom: 1.5rem; word-break: break-all;">
+					{{ flash_info }}
+				</div>
+			{% endfor %}
+
+			{{ form_start(requestForm, {'attr': {'class': 'auth-form-inner'}}) }}
+			{{ form_errors(requestForm) }}
+
+			<div class="form-group">
+				{{ form_label(requestForm.email) }}
+				{{ form_widget(requestForm.email) }}
+				{{ form_errors(requestForm.email) }}
+			</div>
+
+			<div class="form-actions">
+				<button type="submit" class="btn btn-primary btn-large btn-full">
+					<span class="btn-text">Envoyer le lien de réinitialisation</span>
+					<span class="btn-icon">→</span>
+				</button>
+			</div>
+			{{ form_end(requestForm) }}
+
+			<div class="auth-footer">
+				<p class="auth-link">
+					<a href="{{ path('app_login') }}" class="link-primary">Retour à la connexion</a>
+				</p>
+			</div>
+		</div>
+	</div>
+{% endblock %}

@@ -1,0 +1,125 @@
+{# Historique des commandes : liste toutes les commandes passées par l'utilisateur #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Commandes - Auxilia E-commerce
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<div style="margin-top: 2rem; margin-bottom: 2rem;">
+			<div style="display: flex; justify-content: space-between; align-items: center;">
+				<div>
+					<h1 style="font-size: 2.5rem; color: var(--color-primary); margin-bottom: 0.5rem;">Mes Commandes</h1>
+					<p style="color: var(--color-text-light);">Consultez l'historique de vos commandes</p>
+				</div>
+				<a href="{{ path('app_profile') }}" class="btn btn-secondary">Retour au profil</a>
+			</div>
+		</div>
+
+		{% if orders|length > 0 %}
+			<div style="background-color: white; border: 1px solid #e0e0e0; border-radius: 12px; padding: 2rem;">
+				<h2 style="font-size: 1.5rem; color: var(--color-primary); margin-bottom: 1.5rem;">
+					Historique des commandes ({{ orders|length }})
+				</h2>
+
+				<div style="display: flex; flex-direction: column; gap: 1.5rem;">
+					{% for order in orders %}
+						<div style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 1.5rem; transition: all 0.3s; background-color: var(--color-light);">
+							<div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 1rem;">
+								<div style="flex: 1;">
+									<div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+										<h3 style="font-size: 1.25rem; color: var(--color-text); margin: 0;">
+											Commande #{{ order.id }}
+										</h3>
+										<span style="padding: 0.25rem 0.75rem; border-radius: 4px; font-size: 0.85rem; font-weight: bold;
+																								                                            {% if order.status == 'pending' %}
+																								                                                background-color: #fef3c7; color: #d97706;
+																								                                            {% elseif order.status == 'confirmed' %}
+																								                                                background-color: #dbeafe; color: #1e40af;
+																								                                            {% elseif order.status == 'shipped' %}
+																								                                                background-color: #d1fae5; color: #059669;
+																								                                            {% elseif order.status == 'delivered' %}
+																								                                                background-color: #d1fae5; color: #059669;
+																								                                            {% elseif order.status == 'cancelled' %}
+																								                                                background-color: #fee2e2; color: #dc2626;
+																								                                            {% else %}
+																								                                                background-color: #e5e7eb; color: #374151;
+																								                                            {% endif %}">
+											{% if order.status == 'pending' %}
+												En attente
+											{% elseif order.status == 'confirmed' %}
+												Confirmée
+											{% elseif order.status == 'shipped' %}
+												Expédiée
+											{% elseif order.status == 'delivered' %}
+												Livrée
+											{% elseif order.status == 'cancelled' %}
+												Annulée
+											{% else %}
+												{{ order.status|upper }}
+											{% endif %}
+										</span>
+									</div>
+
+									<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+										<div>
+											<div style="font-size: 0.9rem; color: var(--color-text-light); margin-bottom: 0.25rem;">Date</div>
+											<div style="font-size: 1rem; color: var(--color-text); font-weight: 500;">
+												{{ order.dateat|date('d/m/Y à H:i') }}
+											</div>
+										</div>
+										<div>
+											<div style="font-size: 0.9rem; color: var(--color-text-light); margin-bottom: 0.25rem;">Total</div>
+											<div style="font-size: 1.25rem; color: var(--color-primary); font-weight: bold;">
+												{{ order.total }}
+												€
+											</div>
+										</div>
+									</div>
+
+									{% if order.orderItems|length > 0 %}
+										<div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #eee;">
+											<h4 style="font-size: 0.9rem; font-weight: 600; color: var(--color-text); margin-bottom: 0.5rem;">Articles :</h4>
+											<ul style="list-style: none; padding: 0; margin: 0;">
+												{% for item in order.orderItems %}
+													<li style="display: flex; justify-content: space-between; font-size: 0.9rem; color: var(--color-text-light); margin-bottom: 0.25rem;">
+														<span>{{ item.quantity }}x
+															{{ item.productName }}</span>
+														<span>{{ item.price }}
+															€</span>
+													</li>
+												{% endfor %}
+											</ul>
+										</div>
+									{% endif %}
+								</div>
+
+								<div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+									<a href="{{ path('app_order_show', {id: order.id}) }}" class="btn btn-primary btn-small">
+										Voir les détails
+									</a>
+									{% if order.status in ['paid', 'shipped', 'delivered'] %}
+										<a href="{{ path('app_order_tracking', {id: order.id}) }}" class="btn btn-secondary btn-small">
+											<i class="fas fa-truck" style="margin-right: 0.3rem;"></i> Suivre mon colis
+										</a>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+		{% else %}
+			<div style="background-color: white; border: 1px solid #e0e0e0; border-radius: 12px; padding: 4rem 2rem; text-align: center;">
+				<div style="font-size: 4rem; margin-bottom: 1rem;">🛒</div>
+				<h2 style="font-size: 1.5rem; color: var(--color-text); margin-bottom: 1rem;">Aucune commande</h2>
+				<p style="color: var(--color-text-light); margin-bottom: 2rem;">
+					Vous n'avez pas encore passé de commande. Découvrez nos produits !
+				</p>
+				<a href="{{ path('app_product') }}" class="btn btn-primary btn-large">
+					Découvrir nos produits
+				</a>
+			</div>
+		{% endif %}
+	</div>
+{% endblock %}

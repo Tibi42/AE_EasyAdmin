@@ -1,0 +1,159 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Notre Domaine - La Coopé des Vignerons | Auxilia E-commerce{% endblock %}
+
+{% block meta_description %}Découvrez l'histoire et le savoir-faire de notre domaine viticole. Une passion transmise de génération en génération pour des vins d'exception.{% endblock %}
+
+{% block body %}
+	<!-- Hero Section avec vidéo de vendanges en fond -->
+	<section class="position-relative overflow-hidden" style="min-height: 70vh;">
+		<!-- Vidéo de fond -->
+		<video autoplay muted loop playsinline class="position-absolute w-100 h-100" style="object-fit: cover; top: 0; left: 0; z-index: -2;">
+			<source src="{{ asset('assets/video/istockphoto-2171227196-640_adpp_is.mp4') }}" type="video/mp4">
+		</video>
+		<!-- Overlay sombre pour lisibilité -->
+		<div class="position-absolute w-100 h-100" style="top: 0; left: 0; z-index: -1; background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.7) 100%);"></div>
+		
+		<!-- Contenu du hero -->
+		<div class="container h-100 d-flex align-items-center justify-content-center text-center text-white py-5" style="min-height: 70vh;">
+			<div class="py-5">
+				<h1 class="display-2 fw-bold mb-4" style="text-shadow: 2px 2px 8px rgba(0,0,0,0.5);">Notre Domaine</h1>
+				<p class="lead mb-4 mx-auto" style="max-width: 700px; text-shadow: 1px 1px 4px rgba(0,0,0,0.5);">
+					Découvrez l'histoire, la passion et le savoir-faire de nos vignerons qui perpétuent la tradition depuis des générations.
+				</p>
+				<div class="mx-auto bg-white rounded-pill mb-4" style="width: 80px; height: 4px;"></div>
+				<a href="#notre-histoire" class="btn btn-outline-light btn-lg rounded-pill mt-3">
+					<i class="fas fa-chevron-down me-2"></i>Découvrir
+				</a>
+			</div>
+		</div>
+	</section>
+
+	<div class="container py-5" id="notre-histoire">
+
+		<div class="row justify-content-center mb-5 pb-5">
+			<div class="col-lg-10">
+				<div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-5">
+					<div class="row g-0">
+						<div class="col-md-6 overflow-hidden">
+							<img src="{{ asset('images/oenologue-histoire.png') }}" alt="Œnologue créant un assemblage" class="img-fluid h-100 object-fit-cover shadow-sm">
+						</div>
+						<div class="col-md-6 border-start">
+							<div class="card-body p-4 p-md-5">
+								<p class="lead text-dark mb-4">
+									Auxilia E-commerce est née d'une vision simple : rendre les produits de qualité accessibles à tous, en quelques clics.
+								</p>
+								<p class="text-muted mb-4">
+									Fondée en 2020, notre entreprise s'est rapidement imposée comme une référence grâce à notre engagement total envers la satisfaction client. Ce qui n'était au départ qu'une idée entre passionnés est devenu aujourd'hui une plateforme dynamique servant des milliers de clients.
+								</p>
+								<p class="text-muted mb-0">
+									Nous sélectionnons chaque article avec une rigueur absolue, en privilégiant l'innovation et la durabilité pour répondre aux exigences de la vie moderne.
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="mb-5 pb-4 text-center">
+					<h2 class="display-6 fw-bold text-primary mb-5">Nos Valeurs Fondamentales</h2>
+					<div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 text-center">
+						<div class="col">
+							<div class="card h-100 border-0 shadow-sm rounded-4 hover-lift p-4">
+								<div class="fs-1 mb-3 text-primary">
+									<i class="fas fa-gem"></i>
+								</div>
+								<h4 class="fw-bold mb-3">Qualité</h4>
+								<p class="text-muted small mb-0">Une sélection rigoureuse pour une satisfaction durable garantie.</p>
+							</div>
+						</div>
+						<div class="col">
+							<div class="card h-100 border-0 shadow-sm rounded-4 hover-lift p-4">
+								<div class="fs-1 mb-3 text-primary">
+									<i class="fas fa-headset"></i>
+								</div>
+								<h4 class="fw-bold mb-3">Service Client</h4>
+								<p class="text-muted small mb-0">Une équipe dédiée, à votre écoute pour vous accompagner à chaque étape.</p>
+							</div>
+						</div>
+						<div class="col">
+							<div class="card h-100 border-0 shadow-sm rounded-4 hover-lift p-4">
+								<div class="fs-1 mb-3 text-primary">
+									<i class="fas fa-rocket"></i>
+								</div>
+								<h4 class="fw-bold mb-3">Innovation</h4>
+								<p class="text-muted small mb-0">Toujours à la pointe des technologies pour simplifier vos achats.</p>
+							</div>
+						</div>
+						<div class="col">
+							<div class="card h-100 border-0 shadow-sm rounded-4 hover-lift p-4">
+								<div class="fs-1 mb-3 text-primary">
+									<i class="fas fa-leaf"></i>
+								</div>
+								<h4 class="fw-bold mb-3">Durabilité</h4>
+								<p class="text-muted small mb-0">Un engagement concret pour un e-commerce responsable.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row align-items-center bg-dark text-white rounded-4 overflow-hidden g-0 mb-5 shadow-lg">
+					<div class="col-md-8 p-4 p-md-5">
+						<h2 class="display-6 fw-bold mb-4">Notre Mission</h2>
+						<p class="lead opacity-75 mb-4">
+							Rendre le shopping en ligne simple, agréable et inspirant.
+						</p>
+						<p class="opacity-75 mb-0">
+							Nous ne nous contentons pas de vendre des produits. Nous créons une expérience complète, de la sélection méticuleuse de notre catalogue au service après-vente irréprochable. Notre objectif est de devenir votre premier réflexe pour tous vos besoins du quotidien.
+						</p>
+					</div>
+					<div class="col-md-4 bg-primary p-4 p-md-5 d-flex flex-column justify-content-center text-center">
+						<h3 class="fw-bold mb-4">Prêt à explorer ?</h3>
+						<a href="{{ path('app_product') }}" class="btn btn-light btn-lg rounded-pill fw-bold">
+							Voir le catalogue
+							<i class="fas fa-arrow-right ms-2"></i>
+						</a>
+					</div>
+				</div>
+
+				<div class="mt-5 pt-4">
+					<h2 class="text-center fw-bold mb-5">Pourquoi nous choisir ?</h2>
+					<div class="row g-4">
+						<div class="col-md-6 col-lg-4">
+							<div class="d-flex align-items-start gap-3">
+								<div class="bg-primary-subtle text-primary p-3 rounded-3 mt-1">
+									<i class="fas fa-truck fa-lg"></i>
+								</div>
+								<div>
+									<h5 class="fw-bold mb-1">Livraison Rapide</h5>
+									<p class="text-muted small mb-0">Gratuite dès 50€ d'achat avec suivi réel.</p>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6 col-lg-4">
+							<div class="d-flex align-items-start gap-3">
+								<div class="bg-primary-subtle text-primary p-3 rounded-3 mt-1">
+									<i class="fas fa-shield-halved fa-lg"></i>
+								</div>
+								<div>
+									<h5 class="fw-bold mb-1">Paiement Sûr</h5>
+									<p class="text-muted small mb-0">Sécurisation SSL 256 bits haut de gamme.</p>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6 col-lg-4">
+							<div class="d-flex align-items-start gap-3">
+								<div class="bg-primary-subtle text-primary p-3 rounded-3 mt-1">
+									<i class="fas fa-gift fa-lg"></i>
+								</div>
+								<div>
+									<h5 class="fw-bold mb-1">Offres Exclusives</h5>
+									<p class="text-muted small mb-0">Ventes privées pour nos membres fidèles.</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

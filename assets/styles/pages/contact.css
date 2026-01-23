@@ -1,0 +1,38 @@
+/* Contact Page Specific Styles */
+
+.contact-section {
+    margin: 3rem 0;
+}
+
+.contact-form {
+    background-color: var(--color-light);
+    padding: 2rem;
+    border-radius: 8px;
+}
+
+.contact-info {
+    background-color: var(--color-light);
+    padding: 2rem;
+    border-radius: 8px;
+}
+
+.page-content {
+    margin: 3rem 0;
+    line-height: 1.8;
+}
+
+.page-content h2 {
+    margin: 2rem 0 1rem;
+    color: var(--color-primary);
+}
+
+.page-content ul {
+    margin-left: 2rem;
+    margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+    .contact-section > div {
+        grid-template-columns: 1fr !important;
+    }
+}

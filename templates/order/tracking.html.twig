@@ -1,0 +1,189 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Suivi de livraison - Commande #{{ order.id }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div style="margin-top: 2rem; margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h1 style="font-size: 2.5rem; color: var(--color-primary); margin-bottom: 0.5rem;">Suivi de livraison</h1>
+                <p style="color: var(--color-text-light);">Commande #{{ order.id }} - {{ order.dateat|date('d/m/Y') }}</p>
+            </div>
+            <a href="{{ path('app_order_show', {id: order.id}) }}" class="btn btn-secondary">Retour aux détails</a>
+        </div>
+    </div>
+
+    <div style="background-color: white; border: 1px solid #e0e0e0; border-radius: 12px; padding: 2.5rem; margin-bottom: 3rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+        
+        {# Barre de progression du statut #}
+        <div style="margin-bottom: 4rem; position: relative; padding: 0 2rem;">
+            <div style="display: flex; justify-content: space-between; position: relative; z-index: 1;">
+                
+                {# Étape 1: Confirmée #}
+                <div style="text-align: center; width: 100px;">
+                    <div style="width: 40px; height: 40px; background-color: var(--color-primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem; font-weight: bold;">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div style="font-size: 0.85rem; font-weight: 600; color: var(--color-text);">Confirmée</div>
+                </div>
+
+                {# Étape 2: Préparation (si payé ou plus) #}
+                <div style="text-align: center; width: 100px;">
+                    <div style="width: 40px; height: 40px; 
+                        {% if order.status in ['paid', 'shipped', 'delivered'] %}
+                            background-color: var(--color-primary); color: white;
+                        {% else %}
+                            background-color: #e5e7eb; color: #9ca3af;
+                        {% endif %}
+                        border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem;">
+                        <i class="fas fa-box-open"></i>
+                    </div>
+                    <div style="font-size: 0.85rem; font-weight: 600; color: {% if order.status in ['paid', 'shipped', 'delivered'] %}var(--color-text){% else %}#9ca3af{% endif %};">Préparation</div>
+                </div>
+
+                {# Étape 3: Expédiée #}
+                <div style="text-align: center; width: 100px;">
+                    <div style="width: 40px; height: 40px; 
+                        {% if order.status in ['shipped', 'delivered'] %}
+                            background-color: var(--color-primary); color: white;
+                        {% else %}
+                            background-color: #e5e7eb; color: #9ca3af;
+                        {% endif %}
+                        border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem;">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <div style="font-size: 0.85rem; font-weight: 600; color: {% if order.status in ['shipped', 'delivered'] %}var(--color-text){% else %}#9ca3af{% endif %};">Expédiée</div>
+                </div>
+
+                {# Étape 4: Livrée #}
+                <div style="text-align: center; width: 100px;">
+                    <div style="width: 40px; height: 40px; 
+                        {% if order.status == 'delivered' %}
+                            background-color: var(--color-primary); color: white;
+                        {% else %}
+                            background-color: #e5e7eb; color: #9ca3af;
+                        {% endif %}
+                        border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem;">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <div style="font-size: 0.85rem; font-weight: 600; color: {% if order.status == 'delivered' %}var(--color-text){% else %}#9ca3af{% endif %};">Livrée</div>
+                </div>
+
+            </div>
+
+            {# Lignes de connexion entre les étapes #}
+            <div style="position: absolute; top: 20px; left: 60px; right: 60px; height: 3px; background-color: #e5e7eb; z-index: 0;">
+                <div style="height: 100%; background-color: var(--color-primary); transition: width 0.5s ease;
+                    {% if order.status == 'paid' %}
+                        width: 33.33%;
+                    {% elseif order.status == 'shipped' %}
+                        width: 66.66%;
+                    {% elseif order.status == 'delivered' %}
+                        width: 100%;
+                    {% else %}
+                        width: 0%;
+                    {% endif %}
+                "></div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; border-top: 1px solid #f3f4f6; pt-4; margin-top: 2rem; padding-top: 2rem;">
+            
+            {# Détails de livraison #}
+            <div style="background-color: var(--color-light); border-radius: 12px; padding: 1.5rem;">
+                <h3 style="font-size: 1.1rem; color: var(--color-primary); margin-bottom: 1.25rem;">
+                    <i class="fas fa-shipping-fast" style="margin-right: 0.5rem;"></i> Informations de livraison
+                </h3>
+                
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--color-text-light); margin-bottom: 0.25rem;">Transporteur</div>
+                        <div style="font-weight: 600; color: var(--color-text);">
+                            {% if order.carrier %}
+                                {{ order.carrier }}
+                            {% else %}
+                                En attente d'attribution
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--color-text-light); margin-bottom: 0.25rem;">Numéro de suivi</div>
+                        <div style="font-weight: 700; color: var(--color-primary); font-family: monospace; font-size: 1.1rem;">
+                            {% if order.trackingNumber %}
+                                {{ order.trackingNumber }}
+                            {% else %}
+                                Non disponible
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% if order.shippedAt %}
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--color-text-light); margin-bottom: 0.25rem;">Date d'expédition</div>
+                        <div style="font-weight: 600; color: var(--color-text);">
+                            {{ order.shippedAt|date('d/m/Y à H:i') }}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            {# Adresse de livraison #}
+            <div style="background-color: var(--color-light); border-radius: 12px; padding: 1.5rem;">
+                <h3 style="font-size: 1.1rem; color: var(--color-primary); margin-bottom: 1.25rem;">
+                    <i class="fas fa-map-marker-alt" style="margin-right: 0.5rem;"></i> Adresse de destination
+                </h3>
+                
+                <div style="color: var(--color-text); line-height: 1.6;">
+                    <div style="font-weight: bold; font-size: 1.05rem; margin-bottom: 0.5rem;">
+                        {{ order.user.firstName }} {{ order.user.lastName }}
+                    </div>
+                    <div>{{ order.user.address }}</div>
+                    <div>{{ order.user.postalCode }} {{ order.user.city }}</div>
+                    <div style="margin-top: 0.5rem; color: var(--color-text-light); font-size: 0.9rem;">
+                        <i class="fas fa-phone" style="font-size: 0.8rem; margin-right: 0.3rem;"></i> {{ order.user.phone }}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        {# Message contextuel #}
+        <div style="margin-top: 2rem; padding: 1.5rem; border-radius: 8px; background-color: #eff6ff; border-left: 4px solid #3b82f6; display: flex; align-items: center; gap: 1rem;">
+            <div style="font-size: 1.5rem; color: #3b82f6;">
+                <i class="fas fa-info-circle"></i>
+            </div>
+            <div style="color: #1e40af; font-size: 0.95rem;">
+                {% if order.status == 'pending' %}
+                    Votre commande est en attente de validation de paiement.
+                {% elseif order.status == 'paid' %}
+                    Votre commande est en cours de préparation dans nos entrepôts. Elle sera bientôt expédiée.
+                {% elseif order.status == 'shipped' %}
+                    Votre colis est en cours de route. Vous pouvez utiliser le numéro de suivi ci-dessus sur le site du transporteur.
+                {% elseif order.status == 'delivered' %}
+                    Votre colis a été livré. Nous espérons que vos articles vous plairont !
+                {% elseif order.status == 'cancelled' %}
+                    Cette commande a été annulée.
+                {% else %}
+                    Statut actuel : {{ order.status|upper }}
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    /* Styles pour rendre la barre de progression responsive sur mobile */
+    @media (max-width: 640px) {
+        .progress-container {
+            padding: 0 !important;
+        }
+        .step-label {
+            font-size: 0.7rem !important;
+        }
+    }
+</style>
+{% endblock %}

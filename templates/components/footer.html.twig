@@ -1,0 +1,139 @@
+<footer class="bg-dark text-white pt-5 pb-3">
+	<div class="container">
+		<div class="row g-4 mb-4">
+			<div class="col-lg-4 col-md-6">
+				<h4 class="fw-bold mb-4 text-primary">La Coopé des Vignerons</h4>
+				<p class="text-white-50 mb-3">La référence des vins en direct de nos terroirs. Une union de vignerons passionnés pour vous offrir le meilleur de la vigne.</p>
+				<p class="text-white-50">
+					<i class="fas fa-map-marker-alt me-2 text-primary"></i>
+					123 Rue du Commerce, 75000 Paris</p>
+				<p class="text-white-50">
+					<i class="fas fa-phone me-2 text-primary"></i>
+					+33 (0) 1 23 45 67 89</p>
+				<div class="d-flex gap-3 mt-4">
+					<a href="#" class="btn btn-outline-light btn-sm rounded-circle" target="_blank" title="Facebook">
+						<i class="fab fa-facebook-f"></i>
+					</a>
+					<a href="#" class="btn btn-outline-light btn-sm rounded-circle" target="_blank" title="Instagram">
+						<i class="fab fa-instagram"></i>
+					</a>
+					<a href="#" class="btn btn-outline-light btn-sm rounded-circle" target="_blank" title="Twitter">
+						<i class="fab fa-x-twitter"></i>
+					</a>
+				</div>
+			</div>
+			<div class="col-lg-2 col-md-6">
+				<h5 class="fw-bold mb-4">Catégories</h5>
+				<ul class="list-unstyled">
+					<li class="mb-2">
+						<a href="{{ path('app_product') }}" class="text-white-50 text-decoration-none hover-white">Tous les produits</a>
+					</li>
+					{% for category in get_categories() %}
+						<li class="mb-2">
+							<a href="{{ path('app_product', {'category': category.name}) }}" class="text-white-50 text-decoration-none hover-white">{{ category.name }}</a>
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+			<div class="col-lg-2 col-md-6">
+				<h5 class="fw-bold mb-4">Informations</h5>
+				<ul class="list-unstyled">
+					<li class="mb-2">
+						<a href="#" class="text-white-50 text-decoration-none hover-white">Livraison</a>
+					</li>
+					<li class="mb-2">
+						<a href="{{ path('app_contact') }}" class="text-white-50 text-decoration-none hover-white">Contact</a>
+					</li>
+					<li class="mb-2">
+						<a href="{{ path('app_about') }}" class="text-white-50 text-decoration-none hover-white">Domaine</a>
+					</li>
+					<li class="mb-2">
+						<a href="#" class="text-white-50 text-decoration-none hover-white">Mentions légales</a>
+					</li>
+				</ul>
+			</div>
+			<div class="col-lg-4 col-md-6">
+				<h5 class="fw-bold mb-4">Votre compte</h5>
+				<ul class="list-unstyled">
+					{% if app.user %}
+						<li class="mb-2">
+							<a href="{{ path('app_profile') }}" class="text-white-50 text-decoration-none hover-white">Mon compte</a>
+						</li>
+						<li class="mb-2">
+							<a href="{{ path('app_orders') }}" class="text-white-50 text-decoration-none hover-white">Mes commandes</a>
+						</li>
+					{% else %}
+						<li class="mb-2">
+							<a href="{{ path('app_login') }}" class="text-white-50 text-decoration-none hover-white">Connexion</a>
+						</li>
+						<li class="mb-2">
+							<a href="{{ path('app_register') }}" class="text-white-50 text-decoration-none hover-white">Inscription</a>
+						</li>
+					{% endif %}
+				</ul>
+				<div class="mt-4">
+					<h6 class="fw-bold mb-3">Newsletter</h6>
+					<form class="input-group" id="newsletter-form">
+						<input type="email" id="newsletter-email" class="form-control form-control-sm bg-dark border-secondary text-white" placeholder="Votre email" required>
+						<button class="btn btn-primary btn-sm" type="submit" id="newsletter-btn">S'inscrire</button>
+					</form>
+					<div id="newsletter-message" class="mt-2 small" style="display: none;"></div>
+				</div>
+				<script>
+					document.getElementById('newsletter-form').addEventListener('submit', async function(e) {
+						e.preventDefault();
+						const email = document.getElementById('newsletter-email').value;
+						const btn = document.getElementById('newsletter-btn');
+						const msg = document.getElementById('newsletter-message');
+						
+						btn.disabled = true;
+						btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+						
+						try {
+							const response = await fetch('{{ path('app_newsletter_subscribe') }}', {
+								method: 'POST',
+								headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+								body: 'email=' + encodeURIComponent(email)
+							});
+							const data = await response.json();
+							
+							msg.style.display = 'block';
+							if (data.success) {
+								msg.className = 'mt-2 small text-success';
+								msg.innerHTML = '<i class="fas fa-check-circle me-1"></i>' + data.message;
+								document.getElementById('newsletter-email').value = '';
+							} else {
+								msg.className = 'mt-2 small text-warning';
+								msg.innerHTML = '<i class="fas fa-exclamation-circle me-1"></i>' + data.message;
+							}
+						} catch (error) {
+							msg.style.display = 'block';
+							msg.className = 'mt-2 small text-danger';
+							msg.innerHTML = '<i class="fas fa-times-circle me-1"></i>Une erreur est survenue.';
+						}
+						
+						btn.disabled = false;
+						btn.innerHTML = "S'inscrire";
+					});
+				</script>
+			</div>
+		</div>
+		<hr class="border-secondary mb-4">
+		<div class="row align-items-center">
+			<div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+				<p class="text-white-50 small mb-0">&copy;
+					{{ 'now'|date('Y') }}
+					La Coopé des Vignerons. Tous droits réservés.</p>
+			</div>
+			<div class="col-md-6 text-center text-md-end">
+				<div class="payment-methods">
+					<i class="fab fa-cc-visa fa-2x me-3 text-white-50" title="Visa"></i>
+					<i class="fab fa-cc-mastercard fa-2x me-3 text-white-50" title="Mastercard"></i>
+					<i class="fab fa-cc-paypal fa-2x me-3 text-white-50" title="PayPal"></i>
+					<i class="fab fa-cc-stripe fa-2x me-3 text-white-50" title="Stripe"></i>
+					<i class="fab fa-cc-apple-pay fa-2x text-white-50" title="Apple Pay"></i>
+				</div>
+			</div>
+		</div>
+	</div>
+</footer>

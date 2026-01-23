@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion - Auxilia E-commerce
+{% endblock %}
+
+{% block body %}
+	<div class="row justify-content-center">
+		<div class="col-md-6 col-lg-5">
+			<div class="card border-0 shadow-lg rounded-4 overflow-hidden my-5">
+				<div class="card-header bg-primary text-white text-center py-4 border-0">
+					<h2 class="fw-bold mb-0">Connexion</h2>
+					<p class="text-white-50 mb-0">Bienvenue sur Auxilia E-commerce</p>
+				</div>
+				<div class="card-body p-4 p-md-5">
+					{% if error %}
+						<div class="alert alert-danger d-flex align-items-center mb-4" role="alert">
+							<i class="fas fa-exclamation-circle me-2"></i>
+							<div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+						</div>
+					{% endif %}
+
+					{% if app.user %}
+						<div class="alert alert-info d-flex justify-content-between align-items-center mb-4">
+							<span>{{ app.user.userIdentifier }}</span>
+							<a href="{{ path('app_logout') }}" class="btn btn-sm btn-outline-info">Déconnexion</a>
+						</div>
+					{% endif %}
+
+					<form method="post">
+						<div class="form-floating mb-3">
+							<input type="email" value="{{ last_username }}" name="_username" id="inputEmail" class="form-control rounded-3" autocomplete="email" placeholder="votre@email.com" required autofocus>
+							<label for="inputEmail">Adresse Email</label>
+						</div>
+
+						<div class="form-floating mb-4">
+							<input type="password" name="_password" id="inputPassword" class="form-control rounded-3" autocomplete="current-password" placeholder="Mot de passe" required>
+							<label for="inputPassword">Mot de passe</label>
+						</div>
+
+						<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+						<button class="btn btn-primary btn-lg w-100 rounded-3 mb-3 fw-bold" type="submit">
+							Se connecter
+							<i class="fas fa-sign-in-alt ms-2"></i>
+						</button>
+
+						<div class="text-center">
+							<a href="{{ path('app_forgot_password_request') }}" class="text-decoration-none small">Mot de passe oublié ?</a>
+						</div>
+					</form>
+				</div>
+				<div class="card-footer bg-light border-0 py-3 text-center">
+					<p class="mb-0 small text-muted">Pas encore de compte ?
+						<a href="{{ path('app_register') }}" class="fw-bold text-primary text-decoration-none">Inscrivez-vous ici</a>
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

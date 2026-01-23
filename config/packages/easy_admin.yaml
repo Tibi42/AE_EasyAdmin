@@ -1,0 +1,13 @@
+easy_admin:
+    # Configuration de base
+    site_name: 'Auxilia E-commerce - Administration'
+    
+    # Design
+    design:
+        brand_color: '#1e3a5f'
+
+    # Format des dates
+    formats:
+        date: 'd/m/Y'
+        time: 'H:i'
+        datetime: 'd/m/Y H:i'

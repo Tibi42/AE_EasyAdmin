@@ -1,0 +1,131 @@
+{# Layout de base de l'application #}
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>
+			{% block title %}La Coopé des Vignerons - Vins & Terroir
+			{% endblock %}
+		</title>
+		<meta name="description" content="{% block meta_description %}Bienvenue sur La Coopé des Vignerons, votre boutique en ligne de vins d'exception directement issus du domaine.{% endblock %}">
+
+		<link
+		rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+		<!-- Resource Hints -->
+		<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+		<link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+		<link rel="preconnect" href="https://vectorlogo.zone" crossorigin>
+		<link rel="preconnect" href="https://i.pravatar.cc" crossorigin>
+		<link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+		<link
+		rel="dns-prefetch" href="https://images.unsplash.com">
+
+		<!-- Preload Critical Assets -->
+		<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style" crossorigin>
+
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="all" crossorigin> {% block stylesheets %}{% endblock %}
+
+		{% block javascripts %}
+			{# Importation de la map des scripts Stimulus/Turbo #}
+			{% block importmap %}
+				{{ importmap('app') }}
+			{% endblock %}
+		{% endblock %}
+	</head>
+	<body
+		data-controller="modal">
+		{# Composant En-tête : contient le bandeau d'info, la navigation et les actions utilisateur #}
+		{% include 'components/header.html.twig' %}
+
+		<main class="container my-4">
+			{% for label, messages in app.flashes %}
+				{% for message in messages %}
+					<div class="alert alert-{{ label == 'error' ? 'danger' : (label == 'success' ? 'success' : (label == 'warning' ? 'warning' : 'info')) }} alert-dismissible fade show" role="alert">
+						{{ message }}
+						<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+					</div>
+				{% endfor %}
+			{% endfor %}
+
+			{% block body %}{% endblock %}
+		</main>
+
+		{# Composant Pied de page : contient les liens utiles, les réseaux sociaux et le copyright #}
+		{% include 'components/footer.html.twig' %}
+
+		<!-- Product Modal (Bootstrap 5) -->
+		<div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true" data-modal-target="dialog">
+			<div class="modal-dialog modal-lg modal-dialog-centered">
+				<div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+					<div class="modal-body p-0">
+						<div class="row g-0">
+							<div class="col-md-6 bg-light d-flex align-items-center justify-content-center p-4">
+								<div class="product-modal-image-container w-100 h-100 d-flex align-items-center justify-content-center" style="min-height: 300px;">
+									<img src="" alt="" class="img-fluid rounded-3 shadow-sm object-fit-cover" data-modal-target="image">
+									<div class="display-1 text-muted d-none" data-modal-target="placeholder">📦</div>
+								</div>
+							</div>
+							<div class="col-md-6 p-4 p-md-5 d-flex flex-column">
+								<div class="d-flex justify-content-between align-items-start mb-3">
+									<h3 class="fw-bold text-dark mb-0" id="productModalLabel" data-modal-target="title">Produit</h3>
+									<button type="button" class="btn-close py-2" data-bs-dismiss="modal" aria-label="Close"></button>
+								</div>
+
+								<div class="mb-4">
+									<p class="text-muted" data-modal-target="description" style="line-height: 1.6;">Description du produit...</p>
+								</div>
+
+								<div class="mt-auto pt-4 border-top">
+									<div class="d-flex align-items-center justify-content-between mb-4">
+										<span class="fs-4 text-muted">Prix :</span>
+										<span class="fs-2 fw-bold text-primary" data-modal-target="price">0.00 €</span>
+									</div>
+
+									<div class="row g-2">
+										<div class="col-8">
+											<a href="#" class="btn btn-primary btn-lg w-100 rounded-3 fw-bold py-3" data-modal-target="addToCartLink">
+												<i class="fas fa-cart-plus me-2"></i>
+												Ajouter au panier
+											</a>
+										</div>
+										<div class="col-4">
+											<button type="button" class="btn btn-outline-secondary btn-lg w-100 rounded-3 py-3" data-bs-dismiss="modal">Fermer</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		{# Modale de vérification d'âge #}
+		<div class="modal fade" id="ageModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" data-controller="age-check">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+					<div class="modal-body text-center p-5">
+						<div class="age-check-icon mb-4">
+							<i class="fas fa-wine-bottle text-primary" style="font-size: 4rem;"></i>
+						</div>
+						<h3 class="fw-bold mb-3">Vérification de la majorité</h3>
+						<p class="text-muted mb-4">Pour accéder à notre cave en ligne, vous devez avoir l'âge légal de consommer de l'alcool dans votre pays de résidence.</p>
+
+						<div class="d-grid gap-3">
+							<button type="button" class="btn btn-primary btn-lg rounded-pill fw-bold py-3" data-bs-dismiss="modal" data-action="click->age-check#verify">
+								J'AI PLUS DE 18 ANS
+							</button>
+							<a href="https://www.google.com" class="btn btn-link text-muted text-decoration-none small">
+								Je suis mineur, je quitte le site
+							</a>
+						</div>
+					</div>
+					<div class="modal-footer justify-content-center bg-light border-0 py-3">
+						<small class="text-muted">L'abus d'alcool est dangereux pour la santé.</small>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

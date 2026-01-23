@@ -1,0 +1,192 @@
+{# Catalogue des produits : affiche la liste des produits avec filtres, tri et pagination #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Notre Cave - La Coopé des Vignerons | Sélection de Vins Direct Producteur{% endblock %}
+
+{% block meta_description %}Explorez notre catalogue de vins sélectionnés avec soin : rouges, blancs, rosés et pétillants. Le meilleur de nos terroirs livré chez vous.{% endblock %}
+
+{% block body %}
+	<div class="container py-5">
+		<div
+			class="row g-4">
+			{# Sidebar: Filtres #}
+			<aside class="col-lg-3">
+				<div class="sticky-top" style="top: 2rem; z-index: 10;">
+					<div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+						<div class="card-header bg-white border-0 py-3 px-4">
+							<h5 class="fw-bold mb-0">Filtres</h5>
+						</div>
+						<div
+							class="card-body p-4 pt-0">
+							{# Recherche active #}
+							{% if q %}
+								<div class="mb-4">
+									<label class="form-label fw-bold small text-uppercase text-muted">Recherche</label>
+									<div class="alert alert-info py-2 px-3 mb-0 d-flex justify-content-between align-items-center rounded-3">
+										<span class="text-truncate me-2 small">"{{ q }}"</span>
+										<a href="{{ path('app_product', {page: 1, limit: currentLimit, sort: currentSort, direction: currentDirection, category: currentCategory}) }}" class="btn-close btn-close-sm" style="font-size: 0.6rem;" aria-label="Close"></a>
+									</div>
+								</div>
+							{% endif %}
+
+							{# Catégories - Desktop (List) #}
+							<div class="mb-4 d-none d-lg-block">
+								<label class="form-label fw-bold small text-uppercase text-muted mb-3">Catégories</label>
+								<div class="list-group list-group-flush border-0">
+									<a href="{{ path('app_product', {page: 1, limit: currentLimit, sort: currentSort, direction: currentDirection, q: q}) }}" class="list-group-item list-group-item-action border-0 px-0 py-2 d-flex justify-content-between align-items-center {% if not currentCategory %}fw-bold text-primary active-bg{% endif %}" style="background: transparent;">
+										<span>Toutes les catégories</span>
+										{% if not currentCategory %}
+											<i class="fas fa-chevron-right small"></i>
+										{% endif %}
+									</a>
+									{% for category in categories %}
+										<a href="{{ path('app_product', {page: 1, limit: currentLimit, sort: currentSort, direction: currentDirection, category: category.name, q: q}) }}" class="list-group-item list-group-item-action border-0 px-0 py-2 d-flex justify-content-between align-items-center {% if currentCategory == category.name %}fw-bold text-primary active-bg{% endif %}" style="background: transparent;">
+											<span>{{ category.name }}</span>
+											{% if currentCategory == category.name %}
+												<i class="fas fa-chevron-right small"></i>
+											{% endif %}
+										</a>
+									{% endfor %}
+								</div>
+							</div>
+
+							{# Catégories - Mobile (Select) #}
+							<div class="mb-4 d-lg-none">
+								<label for="category-mobile" class="form-label fw-bold small text-uppercase text-muted mb-2">Choisir une catégorie</label>
+								<select id="category-mobile" class="form-select border-0 bg-light rounded-3" onchange="window.location.href=this.value">
+									<option value="{{ path('app_product', {page: 1, limit: currentLimit, sort: currentSort, direction: currentDirection, q: q}) }}">Toutes les catégories</option>
+									{% for category in categories %}
+										<option value="{{ path('app_product', {page: 1, limit: currentLimit, sort: currentSort, direction: currentDirection, category: category.name, q: q}) }}" {% if currentCategory == category.name %} selected {% endif %}>
+											{{ category.name }}
+										</option>
+									{% endfor %}
+								</select>
+							</div>
+
+							{# Tri #}
+							<div class="mb-4">
+								<label for="sort" class="form-label fw-bold small text-uppercase text-muted mb-2">Trier par</label>
+								<select id="sort" class="form-select border-0 bg-light rounded-3" onchange="window.location.href=this.value">
+									<option value="{{ path('app_product', {page: 1, limit: currentLimit, sort: 'p.price', direction: 'asc', category: currentCategory, q: q}) }}" {% if currentSort == 'p.price' and currentDirection == 'asc' %} selected {% endif %}>Prix croissant</option>
+									<option value="{{ path('app_product', {page: 1, limit: currentLimit, sort: 'p.price', direction: 'desc', category: currentCategory, q: q}) }}" {% if currentSort == 'p.price' and currentDirection == 'desc' %} selected {% endif %}>Prix décroissant</option>
+									<option value="{{ path('app_product', {page: 1, limit: currentLimit, sort: 'p.name', direction: 'asc', category: currentCategory, q: q}) }}" {% if currentSort == 'p.name' and currentDirection == 'asc' %} selected {% endif %}>Nom (A-Z)</option>
+								</select>
+							</div>
+
+							{# Affichage #}
+							<div class="mb-4">
+								<label for="limit" class="form-label fw-bold small text-uppercase text-muted mb-2">Produits par page</label>
+								<select id="limit" class="form-select border-0 bg-light rounded-3" onchange="window.location.href=this.value">
+									<option value="{{ path('app_product', {page: 1, limit: 12, sort: currentSort, direction: currentDirection, category: currentCategory, q: q}) }}" {% if currentLimit == 12 %} selected {% endif %}>12 par page</option>
+									<option value="{{ path('app_product', {page: 1, limit: 24, sort: currentSort, direction: currentDirection, category: currentCategory, q: q}) }}" {% if currentLimit == 24 or not currentLimit %} selected {% endif %}>24 par page</option>
+									<option value="{{ path('app_product', {page: 1, limit: 48, sort: currentSort, direction: currentDirection, category: currentCategory, q: q}) }}" {% if currentLimit == 48 %} selected {% endif %}>48 par page</option>
+								</select>
+							</div>
+
+							{# Reset #}
+							{% if currentCategory or q %}
+								<a href="{{ path('app_product') }}" class="btn btn-outline-secondary w-100 rounded-3 mt-2">
+									<i class="fas fa-undo me-2"></i>Réinitialiser
+								</a>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+			</aside>
+
+			{# Main Content: Liste des produits #}
+			<div class="col-lg-9">
+				<div class="row mb-4 align-items-center">
+					<div class="col-md-7">
+						<h1 class="h2 fw-bold text-dark mb-1">Nos
+							<span class="text-primary">Produits</span>
+						</h1>
+						{% if pagination|length > 0 %}
+							<p class="text-muted small mb-0">
+								Affichage de
+								<strong>{{ pagination.getPaginationData.firstItemNumber }}</strong>
+								-
+								<strong>{{ pagination.getPaginationData.lastItemNumber }}</strong>
+								sur
+								<strong>{{ pagination.getTotalItemCount }}</strong>
+								articles
+							</p>
+						{% endif %}
+					</div>
+					<div class="col-md-5 text-md-end mt-3 mt-md-0">
+						<nav aria-label="breadcrumb">
+							<ol class="breadcrumb justify-content-md-end mb-0 bg-transparent p-0">
+								<li class="breadcrumb-item">
+									<a href="{{ path('app_home') }}" class="text-decoration-none text-muted">Accueil</a>
+								</li>
+								<li class="breadcrumb-item active text-primary fw-bold" aria-current="page">Catalogue</li>
+							</ol>
+						</nav>
+					</div>
+				</div>
+
+				{% if pagination|length > 0 %}
+					<div class="row row-cols-2 row-cols-sm-2 row-cols-md-2 row-cols-xl-3 g-2 g-md-4 mb-5">
+						{% for product in pagination %}
+							<div class="col">
+								{% include 'components/product_card.html.twig' with {product: product} %}
+							</div>
+						{% endfor %}
+					</div>
+
+					<div class="d-flex justify-content-center mt-5">
+						<div class="pagination-container py-3">
+							{{ knp_pagination_render(pagination) }}
+						</div>
+					</div>
+				{% else %}
+					<div class="card border-0 shadow-sm rounded-4 text-center py-5">
+						<div class="card-body py-5">
+							<div class="display-1 text-muted opacity-25 mb-4">
+								<i class="fas fa-search-minus"></i>
+							</div>
+							<h3 class="fw-bold">Aucun produit ne correspond</h3>
+							<p class="text-muted mx-auto" style="max-width: 400px;">
+								Désolé, nous n'avons trouvé aucun résultat pour vos critères actuels. Essayez d'élargir votre recherche.
+							</p>
+							<a href="{{ path('app_product') }}" class="btn btn-primary px-4 py-2 rounded-pill mt-3">
+								Effacer tous les filtres
+							</a>
+						</div>
+					</div>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+
+	<style>
+		.active-bg {
+			position: relative;
+		}
+		.active-bg::before {
+			content: '';
+			position: absolute;
+			left: -24px;
+			top: 50%;
+			transform: translateY(-50%);
+			width: 4px;
+			height: 20px;
+			background: var(--color-primary);
+			border-radius: 0 4px 4px 0;
+		}
+		.list-group-item:hover {
+			color: var(--color-primary) !important;
+			padding-left: 5px !important;
+			transition: all 0.2s ease;
+		}
+		.sticky-top {
+			transition: all 0.3s ease;
+		}
+		@media(max-width: 991.98px) {
+			.sticky-top {
+				position: static !important;
+				margin-bottom: 2rem;
+			}
+		}
+	</style>
+</div>{% endblock %}

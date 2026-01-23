@@ -1,0 +1,10 @@
+:root {
+    --color-primary: #722f37;
+    /* Vin de Bourgogne */
+    --color-secondary: #f7e6c4;
+    /* Champagne */
+    --color-accent: #a63d40;
+    --color-dark: #2a1b1b;
+    --color-light: #fdfaf5;
+    --color-white: #ffffff;
+}

@@ -1,0 +1,148 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commande #{{ order.id }}
+	- Auxilia E-commerce
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<div style="margin-top: 2rem; margin-bottom: 2rem;">
+			<div style="display: flex; justify-content: space-between; align-items: center;">
+				<div>
+					<h1 style="font-size: 2.5rem; color: var(--color-primary); margin-bottom: 0.5rem;">
+						Commande #{{ order.id }}
+					</h1>
+					<p style="color: var(--color-text-light);">Détails de votre commande</p>
+				</div>
+				<a href="{{ path('app_orders') }}" class="btn btn-secondary">Retour aux commandes</a>
+			</div>
+		</div>
+
+		<div
+			class="order-detail-section" style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-bottom: 3rem;">
+			<!-- Colonne Principale -->
+			<div
+				style="display: flex; flex-direction: column; gap: 2rem;">
+				<!-- Liste des articles -->
+				<div style="background-color: white; border: 1px solid #e0e0e0; border-radius: 12px; padding: 2rem;">
+					<h2 style="font-size: 1.5rem; color: var(--color-primary); margin-bottom: 1.5rem;">Articles commandés</h2>
+					{% if order.orderItems|length > 0 %}
+						<table style="width: 100%; border-collapse: collapse;">
+							<thead>
+								<tr style="border-bottom: 2px solid #e0e0e0;">
+									<th style="padding: 1rem; text-align: left; color: var(--color-text);">Produit</th>
+									<th style="padding: 1rem; text-align: center; color: var(--color-text);">Quantité</th>
+									<th style="padding: 1rem; text-align: right; color: var(--color-text);">Prix unit.</th>
+									<th style="padding: 1rem; text-align: right; color: var(--color-text);">Total</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for item in order.orderItems %}
+									<tr style="border-bottom: 1px solid #eee;">
+										<td style="padding: 1rem; font-weight: 500; color: var(--color-text);">{{ item.productName }}</td>
+										<td style="padding: 1rem; text-align: center; color: var(--color-text);">{{ item.quantity }}</td>
+										<td style="padding: 1rem; text-align: right; color: var(--color-text);">{{ item.price }}
+											€</td>
+										<td style="padding: 1rem; text-align: right; font-weight: bold; color: var(--color-text);">{{ item.total }}
+											€</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					{% else %}
+						<p style="color: var(--color-text-light);">Détails des articles non disponibles pour cette commande (commande antérieure à la mise à jour).</p>
+					{% endif %}
+				</div>
+
+				<!-- Détails de la commande -->
+				<div style="background-color: white; border: 1px solid #e0e0e0; border-radius: 12px; padding: 2rem;">
+					<h2 style="font-size: 1.5rem; color: var(--color-primary); margin-bottom: 1.5rem;">Informations de la commande</h2>
+
+					<div style="display: grid; gap: 1.5rem;">
+						<div style="padding: 1rem; background-color: var(--color-light); border-radius: 8px;">
+							<div style="font-size: 0.9rem; color: var(--color-text-light); margin-bottom: 0.5rem;">Numéro de commande</div>
+							<div style="font-size: 1.25rem; color: var(--color-text); font-weight: bold;">#{{ order.id }}</div>
+						</div>
+
+						<div style="padding: 1rem; background-color: var(--color-light); border-radius: 8px;">
+							<div style="font-size: 0.9rem; color: var(--color-text-light); margin-bottom: 0.5rem;">Date de commande</div>
+							<div style="font-size: 1.1rem; color: var(--color-text); font-weight: 500;">
+								{{ order.dateat|date('d/m/Y à H:i') }}
+							</div>
+						</div>
+
+						<div style="padding: 1rem; background-color: var(--color-light); border-radius: 8px;">
+							<div style="font-size: 0.9rem; color: var(--color-text-light); margin-bottom: 0.5rem;">Statut</div>
+							<div>
+								<span style="padding: 0.5rem 1rem; border-radius: 4px; font-size: 1rem; font-weight: bold;
+																			                                {% if order.status == 'pending' %}
+																			                                    background-color: #fef3c7; color: #d97706;
+																			                                {% elseif order.status == 'confirmed' %}
+																			                                    background-color: #dbeafe; color: #1e40af;
+																			                                {% elseif order.status == 'shipped' %}
+																			                                    background-color: #d1fae5; color: #059669;
+																			                                {% elseif order.status == 'delivered' %}
+																			                                    background-color: #d1fae5; color: #059669;
+																			                                {% elseif order.status == 'cancelled' %}
+																			                                    background-color: #fee2e2; color: #dc2626;
+																			                                {% else %}
+																			                                    background-color: #e5e7eb; color: #374151;
+																			                                {% endif %}">
+									{% if order.status == 'pending' %}
+										⏳ En attente
+									{% elseif order.status == 'confirmed' %}
+										✅ Confirmée
+									{% elseif order.status == 'shipped' %}
+										🚚 Expédiée
+									{% elseif order.status == 'delivered' %}
+										📦 Livrée
+									{% elseif order.status == 'cancelled' %}
+										❌ Annulée
+									{% else %}
+										{{ order.status|upper }}
+									{% endif %}
+								</span>
+							</div>
+
+							{% if order.status in ['paid', 'shipped', 'delivered'] %}
+								<div style="margin-top: 1.5rem;">
+									<a href="{{ path('app_order_tracking', {id: order.id}) }}" class="btn btn-secondary" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+										<i class="fas fa-shipping-fast"></i> Suivre la livraison
+									</a>
+								</div>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+
+				<!-- Résumé -->
+				<div style="background-color: white; border: 1px solid #e0e0e0; border-radius: 12px; padding: 2rem; height: fit-content;">
+					<h2 style="font-size: 1.5rem; color: var(--color-primary); margin-bottom: 1.5rem;">Résumé</h2>
+
+					<div style="border-bottom: 1px solid #e0e0e0; padding-bottom: 1rem; margin-bottom: 1rem;">
+						<div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+							<span style="color: var(--color-text-light);">Sous-total</span>
+							<span style="color: var(--color-text);">{{ order.total }}
+								€</span>
+						</div>
+						<div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+							<span style="color: var(--color-text-light);">Livraison</span>
+							<span style="color: var(--color-text);">Gratuite</span>
+						</div>
+					</div>
+
+					<div style="display: flex; justify-content: space-between; padding-top: 1rem; border-top: 2px solid var(--color-primary);">
+						<span style="font-size: 1.25rem; font-weight: bold; color: var(--color-text);">Total</span>
+						<span style="font-size: 1.5rem; font-weight: bold; color: var(--color-primary);">{{ order.total }}
+							€</span>
+					</div>
+
+					<div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e0e0e0;">
+						<a href="{{ path('app_product') }}" class="btn btn-primary btn-full" style="text-align: center;">
+							Continuer mes achats
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endblock %}

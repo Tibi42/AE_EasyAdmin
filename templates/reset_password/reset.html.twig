@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réinitialiser le mot de passe - Auxilia E-commerce
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<div class="auth-form enhanced">
+			<div class="auth-header">
+				<h1>Réinitialiser le mot de passe</h1>
+				<p class="auth-subtitle">Choisissez un nouveau mot de passe</p>
+			</div>
+
+			{% for flash_error in app.flashes('error') %}
+				<div class="alert alert-danger" style="margin-bottom: 1.5rem;">{{ flash_error }}</div>
+			{% endfor %}
+
+			{{ form_start(resetForm, {'attr': {'class': 'auth-form-inner'}}) }}
+			{{ form_errors(resetForm) }}
+
+			<div class="form-group">
+				{{ form_label(resetForm.plainPassword) }}
+				{{ form_widget(resetForm.plainPassword) }}
+				{{ form_errors(resetForm.plainPassword) }}
+				<small style="color: var(--color-text-light); font-size: 0.85rem; margin-top: 0.25rem; display: block;">
+					Le mot de passe doit contenir au moins 6 caractères
+				</small>
+			</div>
+
+			<div class="form-group">
+				{{ form_label(resetForm.confirmPassword) }}
+				{{ form_widget(resetForm.confirmPassword) }}
+				{{ form_errors(resetForm.confirmPassword) }}
+			</div>
+
+			<div class="form-actions">
+				<button type="submit" class="btn btn-primary btn-large btn-full">
+					<span class="btn-text">Réinitialiser le mot de passe</span>
+					<span class="btn-icon">→</span>
+				</button>
+			</div>
+			{{ form_end(resetForm) }}
+
+			<div class="auth-footer">
+				<p class="auth-link">
+					<a href="{{ path('app_login') }}" class="link-primary">Retour à la connexion</a>
+				</p>
+			</div>
+		</div>
+	</div>
+{% endblock %}
