@@ -11,7 +11,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils; // Added for SecurityController
 
 /**
  * Contrôleur gérant l'inscription des nouveaux utilisateurs
@@ -31,8 +30,17 @@ class RegistrationController extends AbstractController
      * @return Response Une instance de Response vers la vue d'inscription ou une redirection après succès
      */
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
-    {
+    public function register(
+        Request $request,
+        UserPasswordHasherInterface $userPasswordHasher,
+        Security $security,
+        EntityManagerInterface $entityManager,
+        \Symfony\Component\RateLimiter\RateLimiterFactory $registrationLimiter
+    ): Response {
+        $limiter = $registrationLimiter->create($request->getClientIp());
+        if (false === $limiter->consume(1)->isAccepted()) {
+            throw new \Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException();
+        }
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);

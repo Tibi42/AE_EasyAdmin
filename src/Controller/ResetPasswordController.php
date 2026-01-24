@@ -9,16 +9,25 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email as MimeEmail;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
+/**
+ * Contrôleur gérant la réinitialisation du mot de passe
+ */
 class ResetPasswordController extends AbstractController
 {
+    /**
+     * Gère la demande de réinitialisation de mot de passe (envoi d'email)
+     */
     #[Route('/reset-password', name: 'app_forgot_password_request')]
     public function request(
         Request $request,
         UserRepository $userRepository,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        MailerInterface $mailer
     ): Response {
         $form = $this->createForm(ResetPasswordRequestFormType::class);
         $form->handleRequest($request);
@@ -37,10 +46,25 @@ class ResetPasswordController extends AbstractController
                 $user->setResetTokenExpiresAt(new \DateTimeImmutable('+1 hour')); // Token valide 1 heure
                 $entityManager->flush();
 
-                // En production, vous devriez envoyer un email ici
-                // Pour l'instant, on affiche le lien dans un message flash (à des fins de développement)
                 $resetUrl = $this->generateUrl('app_reset_password', ['token' => $token], true);
-                $this->addFlash('info', 'Lien de réinitialisation (développement) : ' . $resetUrl);
+                $from = getenv('MAILER_FROM') ?: 'noreply@auxilia-ecommerce.com';
+
+                try {
+                    $email = (new MimeEmail())
+                        ->from($from)
+                        ->to($user->getEmail())
+                        ->subject('Réinitialisation de votre mot de passe - Auxilia E-commerce')
+                        ->html($this->renderView('emails/reset_password.html.twig', [
+                            'resetUrl' => $resetUrl,
+                            'firstName' => $user->getFirstName(),
+                        ]));
+                    $mailer->send($email);
+                } catch (\Throwable $e) {
+                    // En dev : afficher le lien en flash si l'envoi échoue (ex. MAILER_DSN=null://)
+                    if ($this->getParameter('kernel.environment') === 'dev') {
+                        $this->addFlash('info', 'Lien de réinitialisation (envoi mail en échec) : ' . $resetUrl);
+                    }
+                }
             }
 
             return $this->redirectToRoute('app_forgot_password_request');
@@ -51,6 +75,9 @@ class ResetPasswordController extends AbstractController
         ]);
     }
 
+    /**
+     * Gère la réinitialisation effective du mot de passe via le token
+     */
     #[Route('/reset-password/{token}', name: 'app_reset_password')]
     public function reset(
         string $token,
@@ -89,4 +116,3 @@ class ResetPasswordController extends AbstractController
         ]);
     }
 }
-

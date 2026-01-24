@@ -5,144 +5,146 @@
 {% endblock %}
 
 {% block body %}
-	<div class="container">
-		<div style="margin-top: 2rem; margin-bottom: 2rem;">
-			<div style="display: flex; justify-content: space-between; align-items: center;">
-				<div>
-					<h1 style="font-size: 2.5rem; color: var(--color-primary); margin-bottom: 0.5rem;">
-						Commande #{{ order.id }}
-					</h1>
-					<p style="color: var(--color-text-light);">Détails de votre commande</p>
-				</div>
-				<a href="{{ path('app_orders') }}" class="btn btn-secondary">Retour aux commandes</a>
+	<div class="py-5">
+		<div class="d-flex justify-content-between align-items-center mb-5">
+			<div>
+				<h1 class="display-4 fw-bold text-primary mb-2">Commande #{{ order.id }}</h1>
+				<p class="text-muted lead">Détails et récapitulatif de votre achat</p>
 			</div>
+			<a href="{{ path('app_orders') }}" class="btn btn-outline-secondary rounded-pill fw-bold">
+				<i class="fas fa-arrow-left me-2"></i>Mes commandes
+			</a>
 		</div>
 
 		<div
-			class="order-detail-section" style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-bottom: 3rem;">
+			class="row g-4">
 			<!-- Colonne Principale -->
 			<div
-				style="display: flex; flex-direction: column; gap: 2rem;">
+				class="col-lg-8">
 				<!-- Liste des articles -->
-				<div style="background-color: white; border: 1px solid #e0e0e0; border-radius: 12px; padding: 2rem;">
-					<h2 style="font-size: 1.5rem; color: var(--color-primary); margin-bottom: 1.5rem;">Articles commandés</h2>
-					{% if order.orderItems|length > 0 %}
-						<table style="width: 100%; border-collapse: collapse;">
-							<thead>
-								<tr style="border-bottom: 2px solid #e0e0e0;">
-									<th style="padding: 1rem; text-align: left; color: var(--color-text);">Produit</th>
-									<th style="padding: 1rem; text-align: center; color: var(--color-text);">Quantité</th>
-									<th style="padding: 1rem; text-align: right; color: var(--color-text);">Prix unit.</th>
-									<th style="padding: 1rem; text-align: right; color: var(--color-text);">Total</th>
-								</tr>
-							</thead>
-							<tbody>
-								{% for item in order.orderItems %}
-									<tr style="border-bottom: 1px solid #eee;">
-										<td style="padding: 1rem; font-weight: 500; color: var(--color-text);">{{ item.productName }}</td>
-										<td style="padding: 1rem; text-align: center; color: var(--color-text);">{{ item.quantity }}</td>
-										<td style="padding: 1rem; text-align: right; color: var(--color-text);">{{ item.price }}
-											€</td>
-										<td style="padding: 1rem; text-align: right; font-weight: bold; color: var(--color-text);">{{ item.total }}
-											€</td>
-									</tr>
-								{% endfor %}
-							</tbody>
-						</table>
-					{% else %}
-						<p style="color: var(--color-text-light);">Détails des articles non disponibles pour cette commande (commande antérieure à la mise à jour).</p>
-					{% endif %}
-				</div>
-
-				<!-- Détails de la commande -->
-				<div style="background-color: white; border: 1px solid #e0e0e0; border-radius: 12px; padding: 2rem;">
-					<h2 style="font-size: 1.5rem; color: var(--color-primary); margin-bottom: 1.5rem;">Informations de la commande</h2>
-
-					<div style="display: grid; gap: 1.5rem;">
-						<div style="padding: 1rem; background-color: var(--color-light); border-radius: 8px;">
-							<div style="font-size: 0.9rem; color: var(--color-text-light); margin-bottom: 0.5rem;">Numéro de commande</div>
-							<div style="font-size: 1.25rem; color: var(--color-text); font-weight: bold;">#{{ order.id }}</div>
-						</div>
-
-						<div style="padding: 1rem; background-color: var(--color-light); border-radius: 8px;">
-							<div style="font-size: 0.9rem; color: var(--color-text-light); margin-bottom: 0.5rem;">Date de commande</div>
-							<div style="font-size: 1.1rem; color: var(--color-text); font-weight: 500;">
-								{{ order.dateat|date('d/m/Y à H:i') }}
+				<div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+					<div class="card-header bg-white py-3 px-4 border-bottom">
+						<h2 class="h5 fw-bold mb-0">Articles commandés</h2>
+					</div>
+					<div class="card-body p-0">
+						{% if order.orderItems|length > 0 %}
+							<div class="table-responsive">
+								<table class="table table-hover align-middle mb-0">
+									<thead class="table-light">
+										<tr>
+											<th class="ps-4">Produit</th>
+											<th class="text-center">Quantité</th>
+											<th class="text-end">Prix unit.</th>
+											<th class="text-end pe-4">Total</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for item in order.orderItems %}
+											<tr>
+												<td class="ps-4 fw-bold">{{ item.productName }}</td>
+												<td class="text-center">{{ item.quantity }}</td>
+												<td class="text-end">{{ item.price }}
+													€</td>
+												<td class="text-end pe-4 fw-bold">{{ item.total }}
+													€</td>
+											</tr>
+										{% endfor %}
+									</tbody>
+								</table>
 							</div>
-						</div>
-
-						<div style="padding: 1rem; background-color: var(--color-light); border-radius: 8px;">
-							<div style="font-size: 0.9rem; color: var(--color-text-light); margin-bottom: 0.5rem;">Statut</div>
-							<div>
-								<span style="padding: 0.5rem 1rem; border-radius: 4px; font-size: 1rem; font-weight: bold;
-																			                                {% if order.status == 'pending' %}
-																			                                    background-color: #fef3c7; color: #d97706;
-																			                                {% elseif order.status == 'confirmed' %}
-																			                                    background-color: #dbeafe; color: #1e40af;
-																			                                {% elseif order.status == 'shipped' %}
-																			                                    background-color: #d1fae5; color: #059669;
-																			                                {% elseif order.status == 'delivered' %}
-																			                                    background-color: #d1fae5; color: #059669;
-																			                                {% elseif order.status == 'cancelled' %}
-																			                                    background-color: #fee2e2; color: #dc2626;
-																			                                {% else %}
-																			                                    background-color: #e5e7eb; color: #374151;
-																			                                {% endif %}">
-									{% if order.status == 'pending' %}
-										⏳ En attente
-									{% elseif order.status == 'confirmed' %}
-										✅ Confirmée
-									{% elseif order.status == 'shipped' %}
-										🚚 Expédiée
-									{% elseif order.status == 'delivered' %}
-										📦 Livrée
-									{% elseif order.status == 'cancelled' %}
-										❌ Annulée
-									{% else %}
-										{{ order.status|upper }}
-									{% endif %}
-								</span>
+						{% else %}
+							<div class="p-4 text-center text-muted">
+								Détails des articles non disponibles pour cette commande.
 							</div>
-
-							{% if order.status in ['paid', 'shipped', 'delivered'] %}
-								<div style="margin-top: 1.5rem;">
-									<a href="{{ path('app_order_tracking', {id: order.id}) }}" class="btn btn-secondary" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
-										<i class="fas fa-shipping-fast"></i> Suivre la livraison
-									</a>
-								</div>
-							{% endif %}
-						</div>
+						{% endif %}
 					</div>
 				</div>
 
-				<!-- Résumé -->
-				<div style="background-color: white; border: 1px solid #e0e0e0; border-radius: 12px; padding: 2rem; height: fit-content;">
-					<h2 style="font-size: 1.5rem; color: var(--color-primary); margin-bottom: 1.5rem;">Résumé</h2>
+				<!-- Informations de la commande -->
+				<div class="row g-4">
+					<div class="col-md-6">
+						<div class="card border-0 shadow-sm rounded-4 h-100">
+							<div class="card-body p-4">
+								<h3 class="h6 text-uppercase fw-bold text-muted mb-4">Infos Commande</h3>
+								<div class="mb-3">
+									<label class="small text-muted d-block">ID Commande</label>
+									<span class="fw-bold">#{{ order.id }}</span>
+								</div>
+								<div class="mb-0">
+									<label class="small text-muted d-block">Date d'achat</label>
+									<span class="fw-bold">{{ order.dateat|date('d/m/Y à H:i') }}</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="card border-0 shadow-sm rounded-4 h-100">
+							<div class="card-body p-4">
+								<h3 class="h6 text-uppercase fw-bold text-muted mb-4">Statut actuel</h3>
+								<div class="mb-4">
+									<span class="badge rounded-pill px-4 py-2 fs-6
+																					{% if order.status == 'pending' %}bg-warning text-dark
+																					{% elseif order.status == 'confirmed' %}bg-info text-white
+																					{% elseif order.status in ['shipped', 'delivered'] %}bg-success text-white
+																					{% elseif order.status == 'cancelled' %}bg-danger text-white
+																					{% else %}bg-secondary text-white{% endif %}">
+										{% if order.status == 'pending' %}⏳ En attente
+											{% elseif order.status == 'confirmed' %}✅ Confirmée
+											{% elseif order.status == 'shipped' %}🚚 Expédiée
+											{% elseif order.status == 'delivered' %}📦 Livrée
+											{% elseif order.status == 'cancelled' %}❌ Annulée
+										{% else %}
+											{{ order.status|upper }}
+										{% endif %}
+									</span>
+								</div>
+								{% if order.status in ['paid', 'shipped', 'delivered'] %}
+									<a href="{{ path('app_order_tracking', {id: order.id}) }}" class="btn btn-primary w-100 rounded-pill">
+										<i class="fas fa-shipping-fast me-2"></i>Suivre mon colis
+									</a>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 
-					<div style="border-bottom: 1px solid #e0e0e0; padding-bottom: 1rem; margin-bottom: 1rem;">
-						<div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-							<span style="color: var(--color-text-light);">Sous-total</span>
-							<span style="color: var(--color-text);">{{ order.total }}
+			<!-- Colonne Latérale : Résumé Financier -->
+			<div class="col-lg-4">
+				<div class="card border-0 shadow-sm rounded-4 sticky-top" style="top: 2rem;">
+					<div class="card-body p-4">
+						<h2 class="h5 fw-bold mb-4">Résumé financier</h2>
+
+						<div class="d-flex justify-content-between mb-3">
+							<span class="text-muted">Sous-total</span>
+							<span class="fw-bold">{{ order.total }}
 								€</span>
 						</div>
-						<div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-							<span style="color: var(--color-text-light);">Livraison</span>
-							<span style="color: var(--color-text);">Gratuite</span>
+
+						<div class="d-flex justify-content-between mb-4">
+							<span class="text-muted">Livraison</span>
+							<span class="text-success fw-bold">Gratuite</span>
 						</div>
-					</div>
 
-					<div style="display: flex; justify-content: space-between; padding-top: 1rem; border-top: 2px solid var(--color-primary);">
-						<span style="font-size: 1.25rem; font-weight: bold; color: var(--color-text);">Total</span>
-						<span style="font-size: 1.5rem; font-weight: bold; color: var(--color-primary);">{{ order.total }}
-							€</span>
-					</div>
+						<hr class="my-4 border-2">
 
-					<div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e0e0e0;">
-						<a href="{{ path('app_product') }}" class="btn btn-primary btn-full" style="text-align: center;">
-							Continuer mes achats
-						</a>
+						<div class="d-flex justify-content-between align-items-center mb-5">
+							<span class="h4 fw-bold mb-0">Total</span>
+							<span class="h3 fw-bold text-primary mb-0">{{ order.total }}
+								€</span>
+						</div>
+
+						<div class="d-grid gap-3 pt-3 border-top">
+							<a href="{{ path('app_product') }}" class="btn btn-primary btn-lg rounded-pill fw-bold">
+								Continuer mes achats
+							</a>
+							<button class="btn btn-outline-secondary rounded-pill fw-bold" onclick="window.print()">
+								<i class="fas fa-print me-2"></i>Imprimer facture
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	{% endblock %}
+	</div>
+{% endblock %}

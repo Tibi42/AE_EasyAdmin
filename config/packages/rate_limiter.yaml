@@ -1,0 +1,13 @@
+framework:
+    rate_limiter:
+        # Limiteur pour l'inscription des utilisateurs
+        registration:
+            policy: 'fixed_window'
+            limit: 5            # Maximum 5 inscriptions
+            interval: '15 minutes' # Par tranche de 15 minutes
+
+        # Limiteur pour l'inscription à la newsletter
+        newsletter:
+            policy: 'fixed_window'
+            limit: 3            # Maximum 3 tentatives
+            interval: '1 minute'   # Par minute

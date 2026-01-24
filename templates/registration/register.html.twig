@@ -4,68 +4,72 @@
 {% endblock %}
 
 {% block body %}
-	<div class="container">
-		<div class="auth-form enhanced">
-			<div class="auth-header">
-				<h1>Créer votre compte</h1>
-				<p class="auth-subtitle">Rejoignez Auxilia E-commerce pour profiter de nos services</p>
-			</div>
-
-			{% for flash_error in app.flashes('verify_email_error') %}
-				<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-			{% endfor %}
-
-			{{ form_start(registrationForm, {'attr': {'class': 'auth-form-inner'}}) }}
-			{{ form_errors(registrationForm) }}
-
-			<div class="form-group">
-				{{ form_label(registrationForm.email) }}
-				{{ form_widget(registrationForm.email) }}
-				{{ form_errors(registrationForm.email) }}
-			</div>
-
-			<div class="form-group">
-				{{ form_label(registrationForm.plainPassword.first) }}
-				{{ form_widget(registrationForm.plainPassword.first) }}
-				{{ form_errors(registrationForm.plainPassword.first) }}
-			</div>
-
-			<div class="form-group">
-				{{ form_label(registrationForm.plainPassword.second) }}
-				{{ form_widget(registrationForm.plainPassword.second) }}
-				{{ form_errors(registrationForm.plainPassword.second) }}
-			</div>
-
-			<div class="form-group">
-				<div style="display: flex; align-items: start; gap: 0.5rem;">
-					{{ form_widget(registrationForm.agreeTerms) }}
-					{{ form_label(registrationForm.agreeTerms, null, {'label_attr': {'style': 'margin: 0; font-weight: normal;'}}) }}
+	<div class="row justify-content-center">
+		<div class="col-md-6 col-lg-5">
+			<div class="card shadow-lg border-0 rounded-4 overflow-hidden my-5">
+				<div class="bg-primary py-4 text-center">
+					<h1 class="text-white h3 fw-bold mb-0">Créer votre compte</h1>
+					<p class="text-white-50 small mb-0">Rejoignez La Coopé des Vignerons</p>
 				</div>
-				{{ form_errors(registrationForm.agreeTerms) }}
-			</div>
 
-			<div class="form-actions">
-				<button type="submit" class="btn btn-primary btn-large btn-full">
-					<span class="btn-text">S'inscrire</span>
-					<span class="btn-icon">→</span>
-				</button>
-			</div>
-			{{ form_end(registrationForm) }}
+				<div class="card-body p-4 p-md-5">
+					{% for flash_error in app.flashes('verify_email_error') %}
+						<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+					{% endfor %}
 
-			<div class="auth-footer">
-				<p class="auth-link">
-					Déjà un compte ?
-					<a href="{{ path('app_login') }}" class="link-primary">Connectez-vous</a>
-				</p>
-				<p class="auth-benefits">
-					<strong>En vous inscrivant, vous bénéficiez de :</strong>
-				</p>
-				<ul class="benefits-list">
-					<li>🛒 Accès à tous nos produits</li>
-					<li>📦 Livraison offerte dès 50€ d'achat</li>
-					<li>🎁 Offres spéciales membres</li>
-					<li>💳 Paiement sécurisé</li>
-				</ul>
+					{{ form_start(registrationForm) }}
+					<div class="mb-3">
+						{{ form_label(registrationForm.email, 'Adresse Email', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+						{{ form_widget(registrationForm.email, {'attr': {'class': 'form-control form-control-lg', 'placeholder': 'votre@email.com'}}) }}
+						{{ form_errors(registrationForm.email) }}
+					</div>
+
+					<div class="mb-3">
+						{{ form_label(registrationForm.plainPassword.first, 'Mot de passe', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+						{{ form_widget(registrationForm.plainPassword.first, {'attr': {'class': 'form-control form-control-lg', 'placeholder': '••••••••'}}) }}
+						{{ form_errors(registrationForm.plainPassword.first) }}
+					</div>
+
+					<div class="mb-3">
+						{{ form_label(registrationForm.plainPassword.second, 'Confirmez le mot de passe', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+						{{ form_widget(registrationForm.plainPassword.second, {'attr': {'class': 'form-control form-control-lg', 'placeholder': '••••••••'}}) }}
+						{{ form_errors(registrationForm.plainPassword.second) }}
+					</div>
+
+					<div class="mb-4 d-flex align-items-start gap-2">
+						{{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input mt-1'}}) }}
+						{{ form_label(registrationForm.agreeTerms, "J'accepte les conditions d'utilisation", {'label_attr': {'class': 'form-check-label small text-muted'}}) }}
+						{{ form_errors(registrationForm.agreeTerms) }}
+					</div>
+
+					<button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill fw-bold py-3 shadow-sm transition-all hover-lift">
+						S'inscrire
+						<i class="fas fa-arrow-right ms-2"></i>
+					</button>
+					{{ form_end(registrationForm) }}
+
+					<div class="mt-5 pt-4 border-top text-center">
+						<p class="mb-4">
+							Déjà un compte ?
+							<a href="{{ path('app_login') }}" class="text-primary fw-bold text-decoration-none">Connectez-vous</a>
+						</p>
+
+						<div class="bg-light p-4 rounded-4 text-start">
+							<h6 class="fw-bold mb-3">
+								<i class="fas fa-star text-primary me-2"></i>Vos avantages :</h6>
+							<ul class="list-unstyled small mb-0">
+								<li class="mb-2">
+									<i class="fas fa-check text-success me-2"></i>Accès à nos cuvées exclusives</li>
+								<li class="mb-2">
+									<i class="fas fa-check text-success me-2"></i>Livraison offerte dès 12 bouteilles</li>
+								<li class="mb-2">
+									<i class="fas fa-check text-success me-2"></i>Offres spéciales membres</li>
+								<li>
+									<i class="fas fa-check text-success me-2"></i>Paiement sécurisé par Stripe</li>
+							</ul>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

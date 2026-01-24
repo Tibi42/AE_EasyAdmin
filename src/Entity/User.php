@@ -43,6 +43,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     /**
+     * Mot de passe en clair (virtuel, non persisté). Utilisé uniquement dans les formulaires.
+     */
+    private ?string $plainPassword = null;
+
+    /**
      * Prénom de l'utilisateur
      */
     #[ORM\Column(length: 255, nullable: true)]
@@ -142,6 +147,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
+     * Représentation textuelle de l'utilisateur (formulaires, listes, filtres).
+     */
+    public function __toString(): string
+    {
+        $name = trim(($this->firstName ?? '') . ' ' . ($this->lastName ?? ''));
+        if ($name !== '') {
+            return $name . ' (' . ($this->email ?? '') . ')';
+        }
+        return (string) ($this->email ?? 'User #' . $this->id);
+    }
+
+    /**
      * @see UserInterface
      */
     public function getRoles(): array
@@ -174,6 +191,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): static
     {
         $this->password = $password;
+
+        return $this;
+    }
+
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(?string $plainPassword): static
+    {
+        $this->plainPassword = $plainPassword;
 
         return $this;
     }

@@ -28,8 +28,8 @@
 
 							<div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
 								<div class="form-check mb-0">
-									<input class="form-check-input" type="checkbox" id="select-all" style="width: 20px; height: 20px; cursor: pointer;">
-									<label class="form-check-label fw-bold ms-2 mt-1" for="select-all" style="cursor: pointer;">Tout sélectionner</label>
+									<input class="form-check-input" type="checkbox" id="select-all">
+									<label class="form-check-label fw-bold ms-2" for="select-all">Tout sélectionner</label>
 								</div>
 								<button type="submit" id="delete-selected-btn" class="btn btn-sm btn-outline-danger px-3 d-none align-items-center gap-2">
 									<i class="fas fa-trash-alt"></i>
@@ -39,9 +39,9 @@
 
 							<div class="table-responsive">
 								<table class="table table-hover align-middle mb-0">
-									<thead class="bg-light">
+									<thead class="table-light">
 										<tr>
-											<th class="ps-4" style="width: 60px;"></th>
+											<th class="ps-4" style="width: 50px;"></th>
 											<th>Produit</th>
 											<th class="text-center">Prix</th>
 											<th class="text-center">Quantité</th>
@@ -53,11 +53,11 @@
 										{% for item in cart %}
 											<tr>
 												<td class="ps-4">
-													<input type="checkbox" name="ids[]" value="{{ item.product.id }}" class="item-checkbox form-check-input" style="width: 18px; height: 18px; cursor: pointer;">
+													<input type="checkbox" name="ids[]" value="{{ item.product.id }}" class="item-checkbox form-check-input">
 												</td>
 												<td>
 													<div class="d-flex align-items-center">
-														<div class="rounded-3 border overflow-hidden me-3 bg-light d-flex align-items-center justify-content-center" style="width: 70px; height: 70px; flex-shrink: 0;">
+														<div class="rounded-3 border overflow-hidden me-3 bg-light d-flex align-items-center justify-content-center shadow-sm" style="width: 64px; height: 64px; flex-shrink: 0;">
 															{% if item.product.imageName %}
 																<img src="{{ item.product.imageName matches '/^https?:\\/\\//' ? item.product.imageName : asset('uploads/products/' ~ item.product.imageName) }}" alt="{{ item.product.name }}" class="img-fluid w-100 h-100 object-fit-cover">
 															{% else %}
@@ -66,20 +66,20 @@
 														</div>
 														<div>
 															<h6 class="mb-0 fw-bold">{{ item.product.name }}</h6>
-															<small class="text-muted">{{ item.product.category ?? 'Général' }}</small>
+															<small class="text-muted text-uppercase x-small" style="font-size: 0.65rem;">{{ item.product.category ?? 'Vin' }}</small>
 														</div>
 													</div>
 												</td>
-												<td class="text-center">{{ item.product.price|number_format(2, ',', ' ') }}
+												<td class="text-center fw-medium">{{ item.product.price|number_format(2, ',', ' ') }}
 													€</td>
 												<td class="text-center">
-													<div class="d-inline-flex align-items-center border rounded-pill p-1">
-														<a href="{{ path('cart_remove', {'id': item.product.id}) }}" class="btn btn-sm btn-link text-decoration-none py-0 shadow-none border-0" title="Retirer un">
-															<i class="fas fa-minus small"></i>
+													<div class="d-inline-flex align-items-center bg-light border rounded-pill p-1">
+														<a href="{{ path('cart_remove', {'id': item.product.id}) }}" class="btn btn-sm btn-light rounded-circle p-0 d-flex align-items-center justify-content-center" style="width: 24px; height: 24px;" title="Retirer un">
+															<i class="fas fa-minus x-small"></i>
 														</a>
-														<input type="number" value="{{ item.quantity }}" class="form-control form-control-sm border-0 text-center fw-bold bg-transparent p-0 quantity-input" style="width: 45px; box-shadow: none;" min="1" onchange="window.updateQuantity({{ item.product.id }}, this.value)">
-														<a href="{{ path('cart_add', {'id': item.product.id}) }}" class="btn btn-sm btn-link text-decoration-none py-0 shadow-none border-0" title="Ajouter un">
-															<i class="fas fa-plus small"></i>
+														<input type="number" value="{{ item.quantity }}" class="form-control form-control-sm border-0 text-center fw-bold bg-transparent p-0 mx-1" style="width: 35px; box-shadow: none;" min="1" disabled>
+														<a href="{{ path('cart_add', {'id': item.product.id}) }}" class="btn btn-sm btn-light rounded-circle p-0 d-flex align-items-center justify-content-center" style="width: 24px; height: 24px;" title="Ajouter un">
+															<i class="fas fa-plus x-small"></i>
 														</a>
 													</div>
 												</td>
@@ -88,8 +88,8 @@
 													€
 												</td>
 												<td class="pe-4">
-													<a href="{{ path('cart_delete', {'id': item.product.id}) }}" class="text-danger-emphasis p-2" title="Tout supprimer" onclick="return confirm('Supprimer tous les articles de ce produit ?')">
-														<i class="fas fa-times"></i>
+													<a href="{{ path('cart_delete', {'id': item.product.id}) }}" class="btn btn-link link-danger p-2" title="Tout supprimer" onclick="return confirm('Supprimer tous les articles de ce produit ?')">
+														<i class="fas fa-trash-can"></i>
 													</a>
 												</td>
 											</tr>
@@ -196,20 +196,22 @@ updateDeleteBtn();
 });
 }
 
-window.updateQuantity = function(productId, quantity) {
-    if (quantity < 1) return;
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = "{{ path('cart_update', {'id': 'PRODUCT_ID'}) }}".replace('PRODUCT_ID', productId);
-    
-    const input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = 'quantity';
-    input.value = quantity;
-    
-    form.appendChild(input);
-    document.body.appendChild(form);
-    form.submit();
+window.updateQuantity = function (productId, quantity) {
+if (quantity < 1) 
+return;
+
+const form = document.createElement('form');
+form.method = 'POST';
+form.action = "{{ path('cart_update', {'id': 'PRODUCT_ID'}) }}".replace('PRODUCT_ID', productId);
+
+const input = document.createElement('input');
+input.type = 'hidden';
+input.name = 'quantity';
+input.value = quantity;
+
+form.appendChild(input);
+document.body.appendChild(form);
+form.submit();
 };
 
 document.addEventListener('DOMContentLoaded', initCartSelection);

@@ -18,18 +18,26 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\ChoiceFilter;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 
+/**
+ * Contrôleur CRUD pour la gestion des utilisateurs dans l'administration
+ */
 class UserCrudController extends AbstractCrudController
 {
     public function __construct(
         private UserPasswordHasherInterface $passwordHasher
-    ) {
-    }
+    ) {}
 
+    /**
+     * Retourne le nom de la classe de l'entité gérée
+     */
     public static function getEntityFqcn(): string
     {
         return User::class;
     }
 
+    /**
+     * Configure les options générales du CRUD (labels, titres, tri)
+     */
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
@@ -41,27 +49,30 @@ class UserCrudController extends AbstractCrudController
             ->setDefaultSort(['id' => 'DESC']);
     }
 
+    /**
+     * Configure les champs affichés dans les formulaires et la liste
+     */
     public function configureFields(string $pageName): iterable
     {
         yield IdField::new('id', 'ID')
             ->hideOnForm();
-        
+
         yield EmailField::new('email', 'Email')
             ->setRequired(true);
-        
+
         $passwordField = TextField::new('plainPassword', 'Mot de passe')
             ->setFormType(PasswordType::class)
             ->setRequired($pageName === Crud::PAGE_NEW)
             ->hideOnIndex()
             ->hideOnDetail()
             ->setHelp($pageName === Crud::PAGE_EDIT ? 'Laisser vide pour ne pas modifier le mot de passe' : '');
-        
+
         if ($pageName === Crud::PAGE_EDIT) {
             $passwordField->setRequired(false);
         }
-        
+
         yield $passwordField;
-        
+
         yield ChoiceField::new('roles', 'Rôles')
             ->setChoices([
                 'Utilisateur' => 'ROLE_USER',
@@ -69,37 +80,40 @@ class UserCrudController extends AbstractCrudController
             ])
             ->allowMultipleChoices()
             ->renderExpanded();
-        
+
         yield TextField::new('firstName', 'Prénom')
             ->hideOnIndex();
-        
+
         yield TextField::new('lastName', 'Nom')
             ->hideOnIndex();
-        
+
         yield TextField::new('phone', 'Téléphone')
             ->hideOnIndex();
-        
+
         yield TextField::new('address', 'Adresse')
             ->hideOnIndex();
-        
+
         yield TextField::new('postalCode', 'Code postal')
             ->hideOnIndex();
-        
+
         yield TextField::new('city', 'Ville')
             ->hideOnIndex();
-        
+
         yield TextField::new('country', 'Pays')
             ->hideOnIndex();
-        
+
         yield BooleanField::new('isActive', 'Actif')
             ->setHelp('Compte activé ou désactivé');
-        
+
         yield ArrayField::new('cart', 'Panier')
             ->hideOnForm()
             ->hideOnIndex()
             ->setHelp('Contenu du panier persistant (lecture seule)');
     }
 
+    /**
+     * Configure les filtres de recherche
+     */
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
@@ -111,6 +125,9 @@ class UserCrudController extends AbstractCrudController
             ->add('isActive', 'Actif');
     }
 
+    /**
+     * Configure les actions disponibles (détails, etc.)
+     */
     public function configureActions(Actions $actions): Actions
     {
         return $actions
@@ -132,7 +149,7 @@ class UserCrudController extends AbstractCrudController
             $request = $context->getRequest();
             $formData = $request->request->all();
             $plainPassword = $formData['User']['plainPassword'] ?? $formData['User']['fields']['plainPassword'] ?? null;
-            
+
             if ($plainPassword && !empty($plainPassword)) {
                 $entityInstance->setPassword(
                     $this->passwordHasher->hashPassword(
@@ -142,7 +159,7 @@ class UserCrudController extends AbstractCrudController
                 );
             }
         }
-        
+
         parent::persistEntity($entityManager, $entityInstance);
     }
 
@@ -154,7 +171,7 @@ class UserCrudController extends AbstractCrudController
             $request = $context->getRequest();
             $formData = $request->request->all();
             $plainPassword = $formData['User']['plainPassword'] ?? $formData['User']['fields']['plainPassword'] ?? null;
-            
+
             if ($plainPassword && !empty($plainPassword)) {
                 $entityInstance->setPassword(
                     $this->passwordHasher->hashPassword(
@@ -164,7 +181,7 @@ class UserCrudController extends AbstractCrudController
                 );
             }
         }
-        
+
         parent::updateEntity($entityManager, $entityInstance);
     }
 }

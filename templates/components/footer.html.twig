@@ -93,7 +93,7 @@
 							const response = await fetch('{{ path('app_newsletter_subscribe') }}', {
 								method: 'POST',
 								headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-								body: 'email=' + encodeURIComponent(email)
+								body: 'email=' + encodeURIComponent(email) + '&_token={{ csrf_token('newsletter_subscribe') }}'
 							});
 							const data = await response.json();
 							

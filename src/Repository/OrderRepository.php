@@ -36,7 +36,7 @@ class OrderRepository extends ServiceEntityRepository
 
         if ($status !== null && $status !== '') {
             $qb->andWhere('o.status = :status')
-               ->setParameter('status', $status);
+                ->setParameter('status', $status);
         }
 
         return $qb->getQuery()->getResult();
@@ -95,9 +95,9 @@ class OrderRepository extends ServiceEntityRepository
             ->orderBy('o.status', 'ASC');
 
         $results = $qb->getQuery()->getResult();
-        
+
         // Extraire les valeurs de statuts du tableau associatif
-        return array_map(function($row) {
+        return array_map(function ($row) {
             return $row['status'];
         }, $results);
     }
@@ -185,7 +185,7 @@ class OrderRepository extends ServiceEntityRepository
     public function getSalesLast7Days(): array
     {
         $results = [];
-        
+
         for ($i = 6; $i >= 0; $i--) {
             $date = new \DateTime("-{$i} days");
             $dateStr = $date->format('Y-m-d');
@@ -229,7 +229,7 @@ class OrderRepository extends ServiceEntityRepository
     public function getSalesLast6Months(): array
     {
         $results = [];
-        
+
         for ($i = 5; $i >= 0; $i--) {
             $date = new \DateTime("first day of -{$i} months");
             $startOfMonth = new \DateTime($date->format('Y-m-01 00:00:00'));
@@ -309,34 +309,19 @@ class OrderRepository extends ServiceEntityRepository
     private function getFrenchMonthName(string $monthNumber): string
     {
         $months = [
-            '1' => 'Jan', '2' => 'Fév', '3' => 'Mar', '4' => 'Avr', '5' => 'Mai', '6' => 'Juin',
-            '7' => 'Juil', '8' => 'Août', '9' => 'Sep', '10' => 'Oct', '11' => 'Nov', '12' => 'Déc'
+            '1' => 'Jan',
+            '2' => 'Fév',
+            '3' => 'Mar',
+            '4' => 'Avr',
+            '5' => 'Mai',
+            '6' => 'Juin',
+            '7' => 'Juil',
+            '8' => 'Août',
+            '9' => 'Sep',
+            '10' => 'Oct',
+            '11' => 'Nov',
+            '12' => 'Déc'
         ];
         return $months[$monthNumber] ?? '';
     }
-
-    //    /**
-    //     * @return Order[] Returns an array of Order objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('o')
-    //            ->andWhere('o.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('o.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Order
-    //    {
-    //        return $this->createQueryBuilder('o')
-    //            ->andWhere('o.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
 }

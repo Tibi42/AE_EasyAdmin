@@ -22,24 +22,32 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
+/**
+ * Contrôleur CRUD pour la gestion des produits dans l'administration
+ */
 class ProductCrudController extends AbstractCrudController
 {
     public function __construct(
         private CategoryRepository $categoryRepository,
         private SluggerInterface $slugger
-    ) {
-    }
-    
+    ) {}
+
     private function getProductsDirectory(): string
     {
         return $this->container->getParameter('products_directory');
     }
 
+    /**
+     * Retourne le nom de la classe de l'entité gérée
+     */
     public static function getEntityFqcn(): string
     {
         return Product::class;
     }
 
+    /**
+     * Configure les options générales du CRUD (labels, titres, tri)
+     */
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
@@ -51,6 +59,9 @@ class ProductCrudController extends AbstractCrudController
             ->setDefaultSort(['id' => 'DESC']);
     }
 
+    /**
+     * Configure les champs affichés dans les formulaires et la liste
+     */
     public function configureFields(string $pageName): iterable
     {
         $categories = $this->categoryRepository->findAllOrderedByName();
@@ -58,7 +69,7 @@ class ProductCrudController extends AbstractCrudController
         foreach ($categories as $category) {
             $categoryChoices[$category->getName()] = $category->getName();
         }
-        
+
         // Si aucune catégorie en base, récupérer les catégories existantes depuis les produits
         if (empty($categoryChoices)) {
             $existingCategories = $this->getDoctrine()->getRepository(Product::class)
@@ -67,7 +78,7 @@ class ProductCrudController extends AbstractCrudController
                 ->where('p.category IS NOT NULL')
                 ->getQuery()
                 ->getResult();
-            
+
             foreach ($existingCategories as $cat) {
                 $catName = is_array($cat) ? $cat['category'] : $cat;
                 if ($catName) {
@@ -78,33 +89,36 @@ class ProductCrudController extends AbstractCrudController
 
         yield TextField::new('name', 'Nom')
             ->setRequired(true);
-        
+
         yield TextareaField::new('description', 'Description')
             ->hideOnIndex();
-        
+
         yield MoneyField::new('price', 'Prix')
             ->setCurrency('EUR')
             ->setStoredAsCents(false)
             ->setRequired(true);
-        
+
         yield IntegerField::new('stock', 'Stock')
             ->setHelp('Quantité disponible en stock');
-        
+
         yield ChoiceField::new('category', 'Catégorie')
             ->setChoices($categoryChoices)
             ->setRequired(true);
-        
+
         yield ImageField::new('imageName', 'Image')
             ->setBasePath('/uploads/products/')
             ->setUploadDir('public/uploads/products')
             ->setUploadedFileNamePattern('[slug]-[timestamp].[extension]')
             ->setRequired(false)
             ->hideOnIndex();
-        
+
         yield BooleanField::new('isFeatured', 'Mis en avant')
             ->setHelp('Afficher ce produit sur la page d\'accueil');
     }
 
+    /**
+     * Configure les filtres de recherche
+     */
     public function configureFilters(Filters $filters): Filters
     {
         $categories = $this->categoryRepository->findAllOrderedByName();
@@ -112,7 +126,7 @@ class ProductCrudController extends AbstractCrudController
         foreach ($categories as $category) {
             $categoryChoices[$category->getName()] = $category->getName();
         }
-        
+
         // Si aucune catégorie en base, récupérer depuis les produits
         if (empty($categoryChoices)) {
             $existingCategories = $this->getDoctrine()->getRepository(Product::class)
@@ -121,7 +135,7 @@ class ProductCrudController extends AbstractCrudController
                 ->where('p.category IS NOT NULL')
                 ->getQuery()
                 ->getResult();
-            
+
             foreach ($existingCategories as $cat) {
                 $catName = is_array($cat) ? $cat['category'] : $cat;
                 if ($catName) {
@@ -136,6 +150,9 @@ class ProductCrudController extends AbstractCrudController
             ->add('stock', 'Stock');
     }
 
+    /**
+     * Configure les actions disponibles (détails, etc.)
+     */
     public function configureActions(Actions $actions): Actions
     {
         return $actions
@@ -154,17 +171,20 @@ class ProductCrudController extends AbstractCrudController
         parent::updateEntity($entityManager, $entityInstance);
     }
 
+    /**
+     * Gère l'upload et le redimensionnement de l'image du produit
+     */
     private function handleImageUpload(Product $product): void
     {
         $context = $this->getContext();
         if (!$context) {
             return;
         }
-        
+
         $request = $context->getRequest();
         $formData = $request->request->all();
         $files = $request->files->all();
-        
+
         // Récupérer le fichier depuis le formulaire EasyAdmin
         $imageFile = null;
         if (isset($files['Product']['imageName'])) {
@@ -177,31 +197,31 @@ class ProductCrudController extends AbstractCrudController
             // Validation du type MIME
             $mimeType = $imageFile->getMimeType();
             $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp'];
-            
+
             if (!in_array($mimeType, $allowedMimeTypes, true)) {
                 $this->addFlash('error', 'Type de fichier non autorisé.');
                 return;
             }
-            
+
             // Vérification du contenu réel
             $imageInfo = @getimagesize($imageFile->getPathname());
             if ($imageInfo === false) {
                 $this->addFlash('error', 'Le fichier n\'est pas une image valide.');
                 return;
             }
-            
+
             $allowedImageTypes = [IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_WEBP];
             if (!in_array($imageInfo[2], $allowedImageTypes, true)) {
                 $this->addFlash('error', 'Format d\'image non supporté.');
                 return;
             }
-            
+
             // Limite de taille (5 Mo)
             if ($imageFile->getSize() > 5 * 1024 * 1024) {
                 $this->addFlash('error', 'L\'image ne doit pas dépasser 5 Mo.');
                 return;
             }
-            
+
             // Déterminer l'extension
             $extensionMap = [
                 'image/jpeg' => 'jpg',
@@ -209,7 +229,7 @@ class ProductCrudController extends AbstractCrudController
                 'image/webp' => 'webp',
             ];
             $extension = $extensionMap[$mimeType] ?? 'jpg';
-            
+
             // Générer un nom de fichier unique
             $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
             $sluggedFilename = $this->slugger->slug($originalFilename);

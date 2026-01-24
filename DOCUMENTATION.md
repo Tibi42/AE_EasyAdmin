@@ -6,36 +6,43 @@ Ce document fournit une vue d'ensemble technique de l'application **Auxilia E-co
 
 ## 🏗 1. Architecture Globale
 
-L'application est bâtie sur le framework **Symfony 7.x** en suivant une architecture MVC (Modèle-Vue-Contrôleur) classique, enrichie par des services métier spécialisés.
+L'application est bâtie sur le framework **Symfony 8.x** en suivant une architecture MVC (Modèle-Vue-Contrôleur) classique, enrichie par des services métier spécialisés.
 
-- **Backend** : PHP 8.2+, Symfony (Core, Security, Doctrine, Twig, Paginator, Fixtures).
+- **Backend** : PHP 8.4+, Symfony (Core, Security, Doctrine, Twig, KnpPaginator, Fixtures, Rate Limiter).
 - **Base de données** : MySQL/MariaDB (ORM Doctrine).
 - **Frontend** : Twig, AssetMapper (sans Webpack), Stimulus & Turbo (HMR-like experience).
 - **Style** : Vanilla CSS 3 (Layouts Flexbox/Grid, variables CSS).
+- **Paiement** : Stripe (Checkout, Webhooks).
 
 ---
 
 ## 🗄 2. Modèle de Données (Entités)
 
-L'application s'articule autour de 5 entités principales :
+L'application s'articule autour de **7 entités** : User, Product, Order, OrderItem, Category, Newsletter, Testimonial.
 
 ### `User`
 
-- Gère l'authentification et les profils.
-- **Attributs clés** : `email` (identifiant), `roles`, `password` (haché), `cart` (JSON/Array pour la persistance).
-- **Sécurité** : Intègre un système d'activation/désactivation (`isActive`) géré par un `UserChecker`.
+- Gère l'authentification, les profils et la réinitialisation de mot de passe.
+- **Attributs clés** : `email` (identifiant), `roles`, `password` (haché), `cart` (array/JSON pour la persistance), `resetToken` / `resetTokenExpiresAt` (réinitialisation MDP), `isActive`, et champs de profil (firstName, lastName, phone, address, postalCode, city, country).
+- **Sécurité** : Système d'activation/désactivation (`isActive`) géré par un `UserChecker`.
 
 ### `Product`
 
 - Représente les articles du catalogue.
-- **Champs importants** : `price`, `stock`, `imageName`, `category`.
-- Les catégories sont stockées sous forme de texte simple ou via une entité dédiée pour le filtrage dynamique.
+- **Champs importants** : `price`, `stock`, `imageName`, `category` (chaîne), `isFeatured` (mise en avant page d'accueil).
+- La catégorie est stockée en chaîne de caractères ; l'entité `Category` est utilisée séparément (admin, menus).
 
 ### `Order` & `OrderItem`
 
-- **Order** : En-tête de commande rattachée à un utilisateur, avec un statut (`paid`, `shipped`, etc.).
+- **Order** : En-tête de commande rattachée à un utilisateur, avec un statut (`pending`, `paid`, `shipped`, etc.) et `stripeSessionId` pour le paiement Stripe.
 - **OrderItem** : Détail de chaque ligne de commande.
 - *Note technique* : Le nom et le prix du produit sont copiés dans `OrderItem` lors de la validation pour éviter que le changement futur d'un produit ne modifie les factures passées.
+
+### Autres entités
+
+- **Category** : Catégories de produits (nom, slug) pour l’admin et les listes.
+- **Newsletter** : Inscriptions à la newsletter (email, actif).
+- **Testimonial** : Avis clients (nom, email, note, contenu, approuvé).
 
 ---
 
@@ -47,11 +54,16 @@ Le `CartService` est le cœur de l'expérience d'achat. Il gère :
 
 1. **Stockage hybride** : Utilise la session pour la rapidité et la base de données (`User::cart`) pour la persistance long terme.
 2. **Opérations** : `add()`, `remove()`, `deleteAll()`, `clear()`.
-3. **Calculs** : Somme des quantités et montant total HT/TTC.
+3. **Calculs** : Somme des quantités (`getQuantitySum()`) et montant total (`getTotal()`).
 
 ### 🔄 Synchronisation du Panier (`LoginCartSubscriber`)
 
 Un abonné aux événements de connexion (`SecurityEvents::INTERACTIVE_LOGIN`) permet de fusionner ou de restaurer le panier stocké en base de données dès qu'un utilisateur se connecte.
+
+### 💳 Paiement (`StripeService`, `OrderController`, `StripeWebhookController`)
+
+- **Stripe Checkout** : Création de sessions de paiement, redirection vers Stripe, retour et mise à jour du statut des commandes.
+- **Webhooks** : Traitement des événements Stripe (`checkout.session.completed`, `payment_intent.succeeded`) pour fiabiliser le passage en `paid` même en cas de fermeture du navigateur.
 
 ---
 
@@ -70,6 +82,8 @@ Un abonné aux événements de connexion (`SecurityEvents::INTERACTIVE_LOGIN`) p
 - **CSRF** : Protection active sur tous les formulaires et actions critiques (ex: suppression au panier).
 - **En-têtes HTTP (`SecurityHeadersSubscriber`)** : Ajout automatique de `X-Frame-Options`, `X-Content-Type-Options` et `Content-Security-Policy` pour prévenir les attaques XSS et le clickjacking.
 - **Validation** : Contraintes de validation strictes sur les entités (Assert) et les formulaires.
+- **Rate Limiter** : Limitation des requêtes sur l’inscription et la réinitialisation de mot de passe pour limiter les abus.
+- **Réinitialisation de mot de passe** : Token temporaire dans `User` (`resetToken`, `resetTokenExpiresAt`), flux dédié (`ResetPasswordController`) et envoi d’emails.
 
 ---
 
@@ -88,11 +102,15 @@ L'utilisation de **@hotwired/turbo** permet des transitions de pages instantané
 
 ## 🛠 6. Espace Administration
 
-L'interface d'administration est isolée sous le préfixe `/admin` :
+L'interface d'administration est isolée sous le préfixe `/admin` (EasyAdmin) :
 
-- **Dashboard** : Statistiques en temps réel sur les ventes, les stocks critiques et les nouveaux utilisateurs.
-- **CRUD Produits** : Gestion complète avec upload d'images sécurisé (slugification des noms de fichiers, vérification des types MIME).
-- **Gestion Commandes** : Suivi du cycle de vie des commandes (changement de statut, détails de livraison).
+- **Dashboard** : Statistiques en temps réel (ventes, CA, produits, utilisateurs, commandes, témoignages, newsletter, stocks critiques).
+- **CRUD Produits** : Gestion complète avec upload d'images sécurisé (slugification, vérification des types MIME).
+- **CRUD Utilisateurs** : Gestion des comptes, rôles, activation/désactivation, mot de passe.
+- **CRUD Commandes** : Suivi du cycle de vie (statut, détails de livraison, transporteur, numéro de suivi).
+- **CRUD Catégories** : Gestion des catégories (nom, slug).
+- **CRUD Témoignages** : Modération des avis (approbation, note, contenu).
+- **CRUD Newsletter** : Liste et gestion des abonnés.
 
 ---
 
@@ -115,4 +133,4 @@ php bin/console doctrine:fixtures:load  # Pour avoir des données de test
 
 ---
 
-*Document généré le : 17/01/2026 - Équipe de Développement Auxilia.*
+*Document mis à jour le : 24/01/2026 - Équipe de Développement Auxilia.*

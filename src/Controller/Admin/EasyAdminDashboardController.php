@@ -13,6 +13,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+/**
+ * Contrôleur principal du tableau de bord EasyAdmin
+ * 
+ * Gère les statistiques globales, les ventes et le menu de navigation de l'administration.
+ */
 class EasyAdminDashboardController extends AbstractDashboardController
 {
     public function __construct(
@@ -21,9 +26,11 @@ class EasyAdminDashboardController extends AbstractDashboardController
         private OrderRepository $orderRepository,
         private TestimonialRepository $testimonialRepository,
         private NewsletterRepository $newsletterRepository
-    ) {
-    }
+    ) {}
 
+    /**
+     * Affiche le tableau de bord avec les statistiques et les activités récentes
+     */
     #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
@@ -75,6 +82,9 @@ class EasyAdminDashboardController extends AbstractDashboardController
         ]);
     }
 
+    /**
+     * Configure l'apparence générale du tableau de bord
+     */
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
@@ -83,6 +93,9 @@ class EasyAdminDashboardController extends AbstractDashboardController
             ->setTranslationDomain('admin');
     }
 
+    /**
+     * Configure le menu latéral de l'administration
+     */
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');

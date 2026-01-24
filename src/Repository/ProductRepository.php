@@ -37,7 +37,7 @@ class ProductRepository extends ServiceEntityRepository
 
         if ($category !== null && $category !== '') {
             $qb->andWhere('p.category = :category')
-               ->setParameter('category', $category);
+                ->setParameter('category', $category);
         }
 
         // Filtre par niveau de stock
@@ -64,7 +64,7 @@ class ProductRepository extends ServiceEntityRepository
 
         if ($isFeatured !== null) {
             $qb->andWhere('p.isFeatured = :isFeatured')
-               ->setParameter('isFeatured', $isFeatured);
+                ->setParameter('isFeatured', $isFeatured);
         }
 
         return $qb;
@@ -134,35 +134,10 @@ class ProductRepository extends ServiceEntityRepository
             // Cache le résultat pendant 10 minutes
             ->enableResultCache(600, 'distinct_categories')
             ->getResult();
-        
+
         // Extraire les valeurs de catégories du tableau associatif
-        return array_map(function($row) {
+        return array_map(function ($row) {
             return $row['category'];
         }, $results);
     }
-
-    //    /**
-    //     * @return Product[] Returns an array of Product objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('p.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Product
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
 }

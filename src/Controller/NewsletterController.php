@@ -22,8 +22,26 @@ class NewsletterController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager,
         NewsletterRepository $newsletterRepository,
-        ValidatorInterface $validator
+        ValidatorInterface $validator,
+        \Symfony\Component\RateLimiter\RateLimiterFactory $newsletterLimiter
     ): JsonResponse {
+        $limiter = $newsletterLimiter->create($request->getClientIp());
+        if (false === $limiter->consume(1)->isAccepted()) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'Trop de tentatives. Veuillez réessayer plus tard.'
+            ], Response::HTTP_TOO_MANY_REQUESTS);
+        }
+
+        // Vérification CSRF
+        $submittedToken = $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('newsletter_subscribe', $submittedToken)) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'Jeton CSRF invalide.'
+            ], Response::HTTP_FORBIDDEN);
+        }
+
         $email = $request->request->get('email');
 
         if (!$email) {
@@ -66,5 +84,4 @@ class NewsletterController extends AbstractController
             'message' => 'Merci ! Vous êtes maintenant inscrit à notre newsletter.'
         ]);
     }
-
 }

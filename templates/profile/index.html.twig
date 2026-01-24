@@ -5,228 +5,217 @@
 {% endblock %}
 
 {% block body %}
-	<div class="container">
-		<div style="margin-top: 2rem; margin-bottom: 2rem;">
-			<h1 style="font-size: 2.5rem; color: var(--color-primary); margin-bottom: 0.5rem;">Mon Profil</h1>
-			<p style="color: var(--color-text-light);">Gérez vos informations personnelles</p>
+	<div class="py-5">
+		<div class="mb-5">
+			<h1 class="display-4 fw-bold text-primary">Mon Profil</h1>
+			<p class="text-muted lead">Gérez vos informations personnelles et les paramètres de votre compte</p>
 		</div>
 
 		<div
-			class="profile-section" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 3rem;">
-			<!-- Formulaire -->
-			<div>
-				<div class="auth-form enhanced">
-					<div class="auth-header">
-						<h2>Informations personnelles</h2>
-						<p class="auth-subtitle">Mettez à jour vos informations</p>
+			class="row g-4">
+			<!-- Colonne de gauche : Formulaire principal -->
+			<div class="col-lg-7">
+				<div class="card shadow-sm border-0 rounded-4 overflow-hidden mb-4">
+					<div class="card-header bg-white py-3 border-bottom">
+						<h2 class="h4 fw-bold mb-0">
+							<i class="fas fa-user-edit text-primary me-2"></i>Informations personnelles</h2>
 					</div>
 
-					{% for flash_error in app.flashes('success') %}
-						<div class="alert" style="background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; margin-bottom: 1.5rem;">
-							{{ flash_error }}
+					<div class="card-body p-4">
+						{% for flash_message in app.flashes('success') %}
+							<div class="alert alert-success alert-dismissible fade show rounded-3 mb-4" role="alert">
+								<i class="fas fa-check-circle me-2"></i>
+								{{ flash_message }}
+								<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+							</div>
+						{% endfor %}
+
+						{{ form_start(profileForm) }}
+						<div class="mb-3">
+							{{ form_label(profileForm.email, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+							{{ form_widget(profileForm.email, {'attr': {'class': 'form-control form-control-lg'}}) }}
+							{{ form_errors(profileForm.email) }}
 						</div>
-					{% endfor %}
 
-					{{ form_start(profileForm, {'attr': {'class': 'auth-form-inner'}}) }}
-					{{ form_errors(profileForm) }}
-
-					<div class="form-group">
-						{{ form_label(profileForm.email) }}
-						{{ form_widget(profileForm.email) }}
-						{{ form_errors(profileForm.email) }}
-					</div>
-
-					<div class="form-row">
-						<div class="form-group">
-							{{ form_label(profileForm.firstName) }}
-							{{ form_widget(profileForm.firstName) }}
-							{{ form_errors(profileForm.firstName) }}
-						</div>
-						<div class="form-group">
-							{{ form_label(profileForm.lastName) }}
-							{{ form_widget(profileForm.lastName) }}
-							{{ form_errors(profileForm.lastName) }}
-						</div>
-					</div>
-
-					<div class="form-group">
-						{{ form_label(profileForm.phone) }}
-						{{ form_widget(profileForm.phone) }}
-						{{ form_errors(profileForm.phone) }}
-					</div>
-
-					<div class="form-group">
-						{{ form_label(profileForm.address) }}
-						{{ form_widget(profileForm.address) }}
-						{{ form_errors(profileForm.address) }}
-					</div>
-
-					<div class="form-row">
-						<div class="form-group">
-							{{ form_label(profileForm.postalCode) }}
-							{{ form_widget(profileForm.postalCode) }}
-							{{ form_errors(profileForm.postalCode) }}
-						</div>
-						<div class="form-group">
-							{{ form_label(profileForm.city) }}
-							{{ form_widget(profileForm.city) }}
-							{{ form_errors(profileForm.city) }}
-						</div>
-					</div>
-
-					<div class="form-group">
-						{{ form_label(profileForm.country) }}
-						{{ form_widget(profileForm.country) }}
-						{{ form_errors(profileForm.country) }}
-					</div>
-
-					<div class="form-actions">
-						<button type="submit" class="btn btn-primary btn-large btn-full">
-							<span class="btn-text">Enregistrer les modifications</span>
-							<span class="btn-icon">→</span>
-						</button>
-					</div>
-					{{ form_end(profileForm) }}
-				</div>
-			</div>
-
-			<!-- Informations du compte -->
-			<div>
-				<div style="background-color: white; border: 1px solid #e0e0e0; border-radius: 12px; padding: 2rem; margin-bottom: 2rem;">
-					<h2 style="font-size: 1.5rem; color: var(--color-primary); margin-bottom: 1.5rem;">Informations du compte</h2>
-
-					<div style="margin-bottom: 1.5rem;">
-						<div style="font-size: 0.9rem; color: var(--color-text-light); margin-bottom: 0.5rem;">Email</div>
-						<div style="font-size: 1.1rem; color: var(--color-text); font-weight: 500;">{{ user.email }}</div>
-					</div>
-
-					<div style="margin-bottom: 1.5rem;">
-						<div style="font-size: 0.9rem; color: var(--color-text-light); margin-bottom: 0.5rem;">Rôle</div>
-						<div>
-							{% for role in user.roles %}
-								<span style="padding: 0.25rem 0.75rem; border-radius: 4px; font-size: 0.85rem;
-																														          										                          {% if role == 'ROLE_ADMIN' %}
-																																	          							                              background-color: #fef3c7; color: #d97706;
-																																			          					                          {% else %}
-																																						          		                              background-color: #dbeafe; color: #1e40af;
-																																								                                    {% endif %}">
-									{{ role }}
-								</span>
-							{% endfor %}
-						</div>
-					</div>
-
-					{% if user.firstName or user.lastName %}
-						<div style="margin-bottom: 1.5rem;">
-							<div style="font-size: 0.9rem; color: var(--color-text-light); margin-bottom: 0.5rem;">Nom complet</div>
-							<div style="font-size: 1.1rem; color: var(--color-text); font-weight: 500;">
-								{{ user.firstName }}
-								{{ user.lastName }}
+						<div class="row g-3 mb-3">
+							<div class="col-md-6">
+								{{ form_label(profileForm.firstName, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+								{{ form_widget(profileForm.firstName, {'attr': {'class': 'form-control form-control-lg'}}) }}
+								{{ form_errors(profileForm.firstName) }}
+							</div>
+							<div class="col-md-6">
+								{{ form_label(profileForm.lastName, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+								{{ form_widget(profileForm.lastName, {'attr': {'class': 'form-control form-control-lg'}}) }}
+								{{ form_errors(profileForm.lastName) }}
 							</div>
 						</div>
-					{% endif %}
 
-					{% if user.phone %}
-						<div style="margin-bottom: 1.5rem;">
-							<div style="font-size: 0.9rem; color: var(--color-text-light); margin-bottom: 0.5rem;">Téléphone</div>
-							<div style="font-size: 1.1rem; color: var(--color-text); font-weight: 500;">{{ user.phone }}</div>
+						<div class="mb-3">
+							{{ form_label(profileForm.phone, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+							{{ form_widget(profileForm.phone, {'attr': {'class': 'form-control form-control-lg'}}) }}
+							{{ form_errors(profileForm.phone) }}
 						</div>
-					{% endif %}
 
-					{% if user.address or user.city or user.postalCode %}
-						<div style="margin-bottom: 1.5rem;">
-							<div style="font-size: 0.9rem; color: var(--color-text-light); margin-bottom: 0.5rem;">Adresse</div>
-							<div style="font-size: 1.1rem; color: var(--color-text); font-weight: 500;">
-								{% if user.address %}
-									{{ user.address }}<br>
-								{% endif %}
-								{% if user.postalCode or user.city %}
-									{{ user.postalCode }}
-									{{ user.city }}
-								{% endif %}
-								{% if user.country %}<br>{{ user.country }}
-								{% endif %}
+						<div class="mb-3">
+							{{ form_label(profileForm.address, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+							{{ form_widget(profileForm.address, {'attr': {'class': 'form-control form-control-lg'}}) }}
+							{{ form_errors(profileForm.address) }}
+						</div>
+
+						<div class="row g-3 mb-3">
+							<div class="col-md-4">
+								{{ form_label(profileForm.postalCode, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+								{{ form_widget(profileForm.postalCode, {'attr': {'class': 'form-control form-control-lg'}}) }}
+								{{ form_errors(profileForm.postalCode) }}
+							</div>
+							<div class="col-md-8">
+								{{ form_label(profileForm.city, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+								{{ form_widget(profileForm.city, {'attr': {'class': 'form-control form-control-lg'}}) }}
+								{{ form_errors(profileForm.city) }}
 							</div>
 						</div>
-					{% endif %}
+
+						<div class="mb-4">
+							{{ form_label(profileForm.country, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+							{{ form_widget(profileForm.country, {'attr': {'class': 'form-control form-control-lg'}}) }}
+							{{ form_errors(profileForm.country) }}
+						</div>
+
+						<div class="d-grid pt-3">
+							<button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold py-3 shadow-sm hover-lift">
+								Enregistrer les modifications
+								<i class="fas fa-save ms-2"></i>
+							</button>
+						</div>
+						{{ form_end(profileForm) }}
+					</div>
 				</div>
 
 				<!-- Changement de mot de passe -->
-				<div style="background-color: white; border: 1px solid #e0e0e0; border-radius: 12px; padding: 2rem; margin-bottom: 2rem;">
-					<h2 style="font-size: 1.5rem; color: var(--color-primary); margin-bottom: 1.5rem;">Changer le mot de passe</h2>
-
-					{% for flash_error in app.flashes('error') %}
-						<div class="alert alert-danger" style="margin-bottom: 1.5rem;">{{ flash_error }}</div>
-					{% endfor %}
-
-					{{ form_start(passwordForm, {'attr': {'class': 'auth-form-inner'}}) }}
-					{{ form_errors(passwordForm) }}
-
-					<div class="form-group">
-						{{ form_label(passwordForm.currentPassword) }}
-						{{ form_widget(passwordForm.currentPassword) }}
-						{{ form_errors(passwordForm.currentPassword) }}
+				<div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+					<div class="card-header bg-white py-3 border-bottom">
+						<h2 class="h4 fw-bold mb-0">
+							<i class="fas fa-lock text-primary me-2"></i>Sécurité du compte</h2>
 					</div>
+					<div class="card-body p-4">
+						{% for flash_error in app.flashes('error') %}
+							<div class="alert alert-danger rounded-3 mb-4">{{ flash_error }}</div>
+						{% endfor %}
 
-					<div class="form-group">
-						{{ form_label(passwordForm.newPassword) }}
-						{{ form_widget(passwordForm.newPassword) }}
-						{{ form_errors(passwordForm.newPassword) }}
+						{{ form_start(passwordForm) }}
+						<div class="mb-3">
+							{{ form_label(passwordForm.currentPassword, 'Mot de passe actuel', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+							{{ form_widget(passwordForm.currentPassword, {'attr': {'class': 'form-control', 'placeholder': '••••••••'}}) }}
+							{{ form_errors(passwordForm.currentPassword) }}
+						</div>
+						<div class="row g-3 mb-4">
+							<div class="col-md-6">
+								{{ form_label(passwordForm.newPassword, 'Nouveau mot de passe', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+								{{ form_widget(passwordForm.newPassword, {'attr': {'class': 'form-control', 'placeholder': '••••••••'}}) }}
+								{{ form_errors(passwordForm.newPassword) }}
+							</div>
+							<div class="col-md-6">
+								{{ form_label(passwordForm.confirmPassword, 'Confirmez le nouveau', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+								{{ form_widget(passwordForm.confirmPassword, {'attr': {'class': 'form-control', 'placeholder': '••••••••'}}) }}
+								{{ form_errors(passwordForm.confirmPassword) }}
+							</div>
+						</div>
+						<div class="d-grid">
+							<button type="submit" class="btn btn-outline-primary btn-lg rounded-pill fw-bold py-2 shadow-sm transition-all">
+								Changer le mot de passe
+							</button>
+						</div>
+						{{ form_end(passwordForm) }}
 					</div>
+				</div>
+			</div>
 
-					<div class="form-group">
-						{{ form_label(passwordForm.confirmPassword) }}
-						{{ form_widget(passwordForm.confirmPassword) }}
-						{{ form_errors(passwordForm.confirmPassword) }}
-					</div>
+			<!-- Colonne de droite : Infos fixes et actions -->
+			<div class="col-lg-5">
+				<div class="card shadow-sm border-0 rounded-4 mb-4 bg-light">
+					<div class="card-body p-4">
+						<div class="text-center mb-4">
+							<div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow" style="width: 80px; height: 80px;">
+								<i class="fas fa-user fa-2x"></i>
+							</div>
+							<h3 class="h4 fw-bold mb-1">{{ user.label ?? user.email }}</h3>
+							{% for role in user.roles %}
+								<span class="badge {% if role == 'ROLE_ADMIN' %}bg-warning text-dark{% else %}bg-primary-subtle text-primary border border-primary-subtle{% endif %} rounded-pill px-3 py-2 mt-1">
+									{{ role == 'ROLE_ADMIN' ? 'Administrateur' : 'Client' }}
+								</span>
+							{% endfor %}
+						</div>
 
-					<div class="form-actions">
-						<button type="submit" class="btn btn-primary btn-large btn-full">
-							<span class="btn-text">Changer le mot de passe</span>
-							<span class="btn-icon">→</span>
-						</button>
+						<div class="border-top pt-3">
+							<div class="mb-3">
+								<label class="small text-muted text-uppercase fw-bold">Email de connexion</label>
+								<div class="fw-bold">{{ user.email }}</div>
+							</div>
+
+							{% if user.phone %}
+								<div class="mb-3">
+									<label class="small text-muted text-uppercase fw-bold">Téléphone</label>
+									<div class="fw-bold">{{ user.phone }}</div>
+								</div>
+							{% endif %}
+
+							{% if user.address or user.city %}
+								<div>
+									<label class="small text-muted text-uppercase fw-bold">Adresse enregistrée</label>
+									<div class="fw-bold">
+										{{ user.address }}<br>
+										{{ user.postalCode }}
+										{{ user.city }}
+										{% if user.country %},
+											{{ user.country }}
+										{% endif %}
+									</div>
+								</div>
+							{% endif %}
+						</div>
 					</div>
-					{{ form_end(passwordForm) }}
 				</div>
 
-				<div style="background-color: var(--color-light); border-radius: 12px; padding: 2rem;">
-					<h3 style="font-size: 1.25rem; color: var(--color-primary); margin-bottom: 1rem;">Actions</h3>
-					<div style="display: flex; flex-direction: column; gap: 1rem;">
-						<a href="{{ path('app_orders') }}" class="btn btn-primary" style="text-align: center;">
-							🛒 Mes commandes
-						</a>
-						<a href="{{ path('app_product') }}" class="btn" style="background-color: #10b981; color: white; text-align: center;">
-							📦 Voir les produits
-						</a>
-						<a href="{{ path('app_home') }}" class="btn btn-secondary" style="text-align: center;">
-							🏠 Retour à l'accueil
-						</a>
-						{% if is_granted('ROLE_ADMIN') %}
-							<a href="{{ path('app_admin_dashboard') }}" class="btn" style="background-color: #f59e0b; color: white; text-align: center;">
-								👑 Dashboard Admin
+				<div class="card shadow-sm border-0 rounded-4 mb-4">
+					<div class="card-body p-4">
+						<h3 class="h5 fw-bold mb-4">Actions rapides</h3>
+						<div class="d-grid gap-3">
+							<a href="{{ path('app_orders') }}" class="btn btn-primary btn-lg rounded-3 py-3 d-flex align-items-center justify-content-between px-4">
+								<span>
+									<i class="fas fa-shopping-bag me-3"></i>Mes commandes</span>
+								<i class="fas fa-chevron-right small opacity-50"></i>
 							</a>
-						{% endif %}
+							<a href="{{ path('app_product') }}" class="btn btn-success btn-lg rounded-3 py-3 d-flex align-items-center justify-content-between px-4">
+								<span>
+									<i class="fas fa-wine-bottle me-3"></i>Voir la cave</span>
+								<i class="fas fa-chevron-right small opacity-50"></i>
+							</a>
+							<a href="{{ path('app_home') }}" class="btn btn-secondary btn-lg rounded-3 py-3 d-flex align-items-center justify-content-between px-4">
+								<span>
+									<i class="fas fa-home me-3"></i>Retour à l'accueil</span>
+								<i class="fas fa-chevron-right small opacity-50"></i>
+							</a>
+						</div>
 					</div>
 				</div>
 
 				<!-- Zone de danger -->
-				<div style="background-color: #fee2e2; border: 1px solid #fecaca; border-radius: 12px; padding: 2rem; margin-top: 2rem;">
-					<h3 style="font-size: 1.25rem; color: #dc2626; margin-bottom: 1rem;">Zone de danger</h3>
-					<p style="color: #7f1d1d; margin-bottom: 1.5rem; font-size: 0.9rem;">
-						La suppression de votre compte est irréversible. Toutes vos données seront effacées.
-					</p>
-					<form method="post" action="{{ path('app_profile_delete') }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.');">
-						<input type="hidden" name="_token" value="{{ csrf_token('delete_account') }}">
+				<div class="card border-danger border-opacity-25 shadow-sm rounded-4 bg-danger bg-opacity-10 mt-5">
+					<div class="card-body p-4">
+						<h3 class="h5 fw-bold text-danger mb-3">
+							<i class="fas fa-exclamation-triangle me-2"></i>Zone de danger</h3>
+						<p class="text-danger small mb-4">La suppression de votre compte est définitive. Toutes vos données seront effacées conformément au RGPD.</p>
 
-						<div class="form-group" style="margin-bottom: 1rem;">
-							<label for="delete-password" style="display: block; font-size: 0.9rem; color: #7f1d1d; margin-bottom: 0.5rem;">Saisissez votre mot de passe pour confirmer</label>
-							<input type="password" id="delete-password" name="password" required class="form-control" style="width: 100%; padding: 0.5rem; border: 1px solid #fca5a5; border-radius: 0.375rem;">
-						</div>
-
-						<button type="submit" class="btn btn-full" style="background-color: #dc2626; color: white; text-align: center; border: none; cursor: pointer; padding: 0.75rem 1rem; border-radius: 0.5rem; width: 100%;">
-							🗑️ Supprimer mon compte
-						</button>
-					</form>
+						<form method="post" action="{{ path('app_profile_delete') }}" onsubmit="return confirm('Êtes-vous sûr ?');">
+							<input type="hidden" name="_token" value="{{ csrf_token('delete_account') }}">
+							<div class="mb-3">
+								<input type="password" name="password" required class="form-control border-danger border-opacity-50" placeholder="Saisissez votre mot de passe pour confirmer">
+							</div>
+							<button type="submit" class="btn btn-danger w-100 py-2 fw-bold rounded-pill shadow-sm">
+								Supprimer mon compte
+							</button>
+						</form>
+					</div>
 				</div>
 			</div>
 		</div>

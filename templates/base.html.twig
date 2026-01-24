@@ -12,7 +12,7 @@
 
 		<link
 		rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
-		<!-- Resource Hints -->
+		<!-- Indices de ressources (Pré-connexion) -->
 		<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 		<link rel="preconnect" href="https://images.unsplash.com" crossorigin>
 		<link rel="preconnect" href="https://vectorlogo.zone" crossorigin>
@@ -21,7 +21,7 @@
 		<link
 		rel="dns-prefetch" href="https://images.unsplash.com">
 
-		<!-- Preload Critical Assets -->
+		<!-- Préchargement des ressources critiques -->
 		<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style" crossorigin>
 
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="all" crossorigin> {% block stylesheets %}{% endblock %}
@@ -54,7 +54,7 @@
 		{# Composant Pied de page : contient les liens utiles, les réseaux sociaux et le copyright #}
 		{% include 'components/footer.html.twig' %}
 
-		<!-- Product Modal (Bootstrap 5) -->
+		<!-- Modale Produit (Bootstrap 5) -->
 		<div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true" data-modal-target="dialog">
 			<div class="modal-dialog modal-lg modal-dialog-centered">
 				<div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
