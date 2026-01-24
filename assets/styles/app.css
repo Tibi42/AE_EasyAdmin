@@ -1,4 +1,4 @@
-/* Styles principaux de l'application - Refactorisés pour une meilleure maintenance */
+/* Styles principaux de l'application */
 
 /* Variables */
 @import 'variables.css';
@@ -9,13 +9,9 @@
 /* Composants */
 @import 'components/navbar.css';
 @import 'components/product.css';
-@import 'components/auth.css';
-@import 'components/footer.css';
 @import 'components/pagination.css';
 @import 'components/chat.css';
 @import 'components/search.css';
 
 /* Pages */
 @import 'pages/home.css';
-@import 'pages/contact.css';
-@import 'pages/dashboard.css';
