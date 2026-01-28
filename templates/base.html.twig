@@ -9,6 +9,8 @@
 			{% endblock %}
 		</title>
 		<meta name="description" content="{% block meta_description %}Bienvenue sur La Coopé des Vignerons, votre boutique en ligne de vins d'exception directement issus du domaine.{% endblock %}">
+		<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+		<link rel="canonical" href="{{ app.request.uri }}">
 
 		<link
 		rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
@@ -102,14 +104,14 @@
 		</div>
 
 		{# Modale de vérification d'âge #}
-		<div class="modal fade" id="ageModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" data-controller="age-check">
+		<div class="modal fade" id="ageModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" data-controller="age-check" aria-labelledby="ageModalLabel" aria-hidden="true">
 			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
 					<div class="modal-body text-center p-5">
 						<div class="age-check-icon mb-4">
-							<i class="fas fa-wine-bottle text-primary" style="font-size: 4rem;"></i>
+							<i class="fas fa-wine-bottle text-primary" style="font-size: 4rem;" aria-hidden="true"></i>
 						</div>
-						<h3 class="fw-bold mb-3">Vérification de la majorité</h3>
+						<h3 class="fw-bold mb-3" id="ageModalLabel">Vérification de la majorité</h3>
 						<p class="text-muted mb-4">Pour accéder à notre cave en ligne, vous devez avoir l'âge légal de consommer de l'alcool dans votre pays de résidence.</p>
 
 						<div class="d-grid gap-3">

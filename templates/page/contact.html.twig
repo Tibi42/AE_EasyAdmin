@@ -24,7 +24,7 @@
 						<div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
 							<div class="card-header bg-primary text-white py-3">
 								<h2 class="h5 fw-bold mb-0">
-									<i class="fas fa-paper-plane me-2"></i>Envoyez-nous un message</h2>
+									<i class="fas fa-paper-plane me-2" aria-hidden="true"></i>Envoyez-nous un message</h2>
 							</div>
 							<div class="card-body p-4 p-md-5 bg-light">
 								{{ form_start(contactForm) }}
@@ -107,7 +107,7 @@
 
 							<div class="d-flex align-items-center mb-4">
 								<div class="flex-shrink-0 bg-primary-subtle rounded-circle d-flex align-items-center justify-content-center text-primary" style="width: 48px; height: 48px;">
-									<i class="fas fa-map-marker-alt"></i>
+									<i class="fas fa-map-marker-alt" aria-hidden="true"></i>
 								</div>
 								<div class="ms-3">
 									<h4 class="h6 fw-bold mb-0">Adresse</h4>
@@ -117,7 +117,7 @@
 
 							<div class="d-flex align-items-center mb-4">
 								<div class="flex-shrink-0 bg-primary-subtle rounded-circle d-flex align-items-center justify-content-center text-primary" style="width: 48px; height: 48px;">
-									<i class="fas fa-phone"></i>
+									<i class="fas fa-phone" aria-hidden="true"></i>
 								</div>
 								<div class="ms-3">
 									<h4 class="h6 fw-bold mb-0">Téléphone</h4>
@@ -129,7 +129,7 @@
 
 							<div class="d-flex align-items-center mb-4">
 								<div class="flex-shrink-0 bg-primary-subtle rounded-circle d-flex align-items-center justify-content-center text-primary" style="width: 48px; height: 48px;">
-									<i class="fas fa-envelope"></i>
+									<i class="fas fa-envelope" aria-hidden="true"></i>
 								</div>
 								<div class="ms-3">
 									<h4 class="h6 fw-bold mb-0">Email</h4>
@@ -141,7 +141,7 @@
 
 							<div class="d-flex align-items-center">
 								<div class="flex-shrink-0 bg-primary-subtle rounded-circle d-flex align-items-center justify-content-center text-primary" style="width: 48px; height: 48px;">
-									<i class="fas fa-clock"></i>
+									<i class="fas fa-clock" aria-hidden="true"></i>
 								</div>
 								<div class="ms-3">
 									<h4 class="h6 fw-bold mb-0">Horaires</h4>
@@ -173,9 +173,10 @@
 								</div>
 								<div class="p-3 border-top bg-white">
 									<form class="input-group" data-action="submit->chat#send">
-										<input type="text" class="form-control" placeholder="Votre message..." data-chat-target="input">
-										<button type="submit" class="btn btn-primary">
-											<i class="fas fa-paper-plane"></i>
+										<label for="chat-message-input" class="visually-hidden">Votre message pour le sommelier</label>
+										<input type="text" id="chat-message-input" class="form-control" placeholder="Votre message..." data-chat-target="input">
+										<button type="submit" class="btn btn-primary" aria-label="Envoyer le message">
+											<i class="fas fa-paper-plane" aria-hidden="true"></i>
 										</button>
 									</form>
 								</div>

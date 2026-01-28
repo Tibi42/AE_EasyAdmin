@@ -1,9 +1,13 @@
 :root {
-    --color-primary: #722f37;
-    /* Vin de Bourgogne */
+    /* Vin de Bourgogne légèrement assombri pour le contraste sur fond clair */
+    --color-primary: #6b2c33; 
+    
+    /* Champagne - Utilisé principalement en fond */
     --color-secondary: #f7e6c4;
-    /* Champagne */
-    --color-accent: #a63d40;
+    
+    /* Rouge brique assombri pour être lisible sur blanc (Ratio 4.5:1) */
+    --color-accent: #8c3336;
+    
     --color-dark: #2a1b1b;
     --color-light: #fdfaf5;
     --color-white: #ffffff;

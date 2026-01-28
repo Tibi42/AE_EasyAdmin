@@ -137,7 +137,7 @@
 											<p class="fs-4 fw-italic text-dark mb-4">"{{ testimonial.content }}"</p>
 										</blockquote>
 										<div class="d-flex align-items-center mt-auto">
-											<img src="{{ testimonial.avatar }}" alt="{{ testimonial.author }}" class="rounded-circle border border-3 border-primary-subtle me-3" width="60" height="60" loading="lazy">
+											<img src="{{ testimonial.avatar }}" alt="Portrait de {{ testimonial.author }}" class="rounded-circle border border-3 border-primary-subtle me-3" width="60" height="60" loading="lazy">
 											<div>
 												<h6 class="mb-0 fw-bold">{{ testimonial.author }}</h6>
 												<small class="text-muted">{{ testimonial.date }}</small>
@@ -192,7 +192,7 @@
 										<i class="fas fa-leaf fa-xl"></i>
 									</div>
 									<div>
-										<h5 class="mb-0 fw-bold">Culture Raisonnée</h5>
+										<h3 class="h5 mb-0 fw-bold">Culture Raisonnée</h3>
 										<small class="text-white-50">Respect de la biodiversité</small>
 									</div>
 								</div>
@@ -203,7 +203,7 @@
 										<i class="fas fa-certificate fa-xl"></i>
 									</div>
 									<div>
-										<h5 class="mb-0 fw-bold">AOP & IGP</h5>
+										<h3 class="h5 mb-0 fw-bold">AOP & IGP</h3>
 										<small class="text-white-50">Appellations contrôlées</small>
 									</div>
 								</div>
@@ -219,7 +219,7 @@
 				<div class="col-lg-6">
 					<div class="position-relative">
 						<div class="rounded-4 overflow-hidden shadow-lg position-relative z-1">
-							<img src="{{ asset('images/vignoble-savoir-faire.png') }}" alt="Vignoble de la Coopérative" class="img-fluid">
+							<img src="{{ asset('images/vignoble-savoir-faire.png') }}" alt="Panorama du vignoble de la Coopérative des Vignerons" class="img-fluid" loading="lazy" width="800" height="600">
 						</div>
 						<div class="position-absolute bottom-0 start-0 translate-middle-x mb-5 ms-4 d-none d-md-block z-2">
 							<div class="card border-0 shadow-lg bg-white text-dark rounded-4 p-4 animate__animated animate__fadeInUp">

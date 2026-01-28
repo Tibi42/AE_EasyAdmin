@@ -1,6 +1,6 @@
 /* Identité visuelle - Surcharges de Bootstrap */
 :root {
-    --color-primary: #722f37;
+    --color-primary: #6b2c33;
 }
 
 .btn-primary {
@@ -19,6 +19,11 @@
 /* Utilitaires spécifiques non présents dans Bootstrap */
 .grayscale {
     filter: grayscale(100%);
+}
+
+/* Amélioration du contraste pour les textes en opacité (Bootstrap default is too low) */
+.text-white-50 {
+    color: rgba(255, 255, 255, 0.75) !important;
 }
 
 .hover-white:hover {
@@ -50,10 +55,25 @@
     transition: all 0.3s ease;
 }
 
+/* Accessibilité : Amélioration visuelle du focus pour la navigation au clavier */
+:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* Cibles tactiles : Taille minimale pour les boutons et liens mobiles */
+.navbar-toggler, .btn, .nav-link, .header-socials a, .payment-methods i {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
 /* Ajustements mineurs sur les composants Bootstrap */
 .form-control:focus {
     border-color: var(--color-primary);
-    box-shadow: 0 0 0 0.25rem rgba(114, 47, 55, 0.25);
+    box-shadow: 0 0 0 0.25rem rgba(107, 44, 51, 0.25);
 }
 
 .page-header {

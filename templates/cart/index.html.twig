@@ -74,12 +74,12 @@
 													€</td>
 												<td class="text-center">
 													<div class="d-inline-flex align-items-center bg-light border rounded-pill p-1">
-														<a href="{{ path('cart_remove', {'id': item.product.id}) }}" class="btn btn-sm btn-light rounded-circle p-0 d-flex align-items-center justify-content-center" style="width: 24px; height: 24px;" title="Retirer un">
-															<i class="fas fa-minus x-small"></i>
+														<a href="{{ path('cart_remove', {'id': item.product.id}) }}" class="btn btn-sm btn-light rounded-circle p-0 d-flex align-items-center justify-content-center" style="width: 24px; height: 24px;" aria-label="Retirer une unité de {{ item.product.name }}">
+															<i class="fas fa-minus x-small" aria-hidden="true"></i>
 														</a>
-														<input type="number" value="{{ item.quantity }}" class="form-control form-control-sm border-0 text-center fw-bold bg-transparent p-0 mx-1" style="width: 35px; box-shadow: none;" min="1" disabled>
-														<a href="{{ path('cart_add', {'id': item.product.id}) }}" class="btn btn-sm btn-light rounded-circle p-0 d-flex align-items-center justify-content-center" style="width: 24px; height: 24px;" title="Ajouter un">
-															<i class="fas fa-plus x-small"></i>
+														<input type="number" id="qty-{{ item.product.id }}" value="{{ item.quantity }}" class="form-control form-control-sm border-0 text-center fw-bold bg-transparent p-0 mx-1" style="width: 35px; box-shadow: none;" min="1" disabled aria-label="Quantité pour {{ item.product.name }}">
+														<a href="{{ path('cart_add', {'id': item.product.id}) }}" class="btn btn-sm btn-light rounded-circle p-0 d-flex align-items-center justify-content-center" style="width: 24px; height: 24px;" aria-label="Ajouter une unité de {{ item.product.name }}">
+															<i class="fas fa-plus x-small" aria-hidden="true"></i>
 														</a>
 													</div>
 												</td>
@@ -88,8 +88,8 @@
 													€
 												</td>
 												<td class="pe-4">
-													<a href="{{ path('cart_delete', {'id': item.product.id}) }}" class="btn btn-link link-danger p-2" title="Tout supprimer" onclick="return confirm('Supprimer tous les articles de ce produit ?')">
-														<i class="fas fa-trash-can"></i>
+													<a href="{{ path('cart_delete', {'id': item.product.id}) }}" class="btn btn-link link-danger p-2" aria-label="Supprimer {{ item.product.name }} du panier" onclick="return confirm('Supprimer tous les articles de ce produit ?')">
+														<i class="fas fa-trash-can" aria-hidden="true"></i>
 													</a>
 												</td>
 											</tr>
@@ -104,7 +104,7 @@
 				<div class="col-lg-4">
 					<div class="card border-0 shadow-sm rounded-4 sticky-top" style="top: 100px; z-index: 10;">
 						<div class="card-body p-4">
-							<h4 class="fw-bold mb-4">Résumé</h4>
+							<h2 class="h4 fw-bold mb-4">Résumé</h2>
 							<div class="d-flex justify-content-between mb-3 text-muted">
 								<span>Sous-total</span>
 								<span class="fw-bold text-dark">{{ total|number_format(2, ',', ' ') }}
@@ -127,11 +127,11 @@
 							</a>
 
 							<div class="text-center mt-3">
-								<div class="d-flex justify-content-center align-items-center gap-3 mb-3">
-									<i class="fab fa-cc-visa fa-2x text-primary" title="Visa"></i>
-									<i class="fab fa-cc-mastercard fa-2x text-warning" title="Mastercard"></i>
-									<i class="fab fa-cc-paypal fa-2x text-info" title="PayPal"></i>
-									<i class="fab fa-cc-stripe fa-2x text-secondary" title="Stripe"></i>
+								<div class="d-flex justify-content-center align-items-center gap-3 mb-3" role="group" aria-label="Modes de paiement disponibles">
+									<i class="fab fa-cc-visa fa-2x text-primary" role="img" aria-label="Visa"></i>
+									<i class="fab fa-cc-mastercard fa-2x text-warning" role="img" aria-label="Mastercard"></i>
+									<i class="fab fa-cc-paypal fa-2x text-info" role="img" aria-label="PayPal"></i>
+									<i class="fab fa-cc-stripe fa-2x text-secondary" role="img" aria-label="Stripe"></i>
 								</div>
 								<p class="small text-muted mb-0">
 									<i class="fas fa-shield-alt me-1 text-success"></i>
@@ -199,6 +199,7 @@ updateDeleteBtn();
 window.updateQuantity = function (productId, quantity) {
 if (quantity < 1) 
 return;
+
 
 const form = document.createElement('form');
 form.method = 'POST';
