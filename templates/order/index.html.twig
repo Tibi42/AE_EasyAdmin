@@ -31,11 +31,11 @@
 										<div class="d-flex align-items-center gap-3 mb-4">
 											<h3 class="h4 fw-bold mb-0">Commande #{{ order.id }}</h3>
 											<span class="badge rounded-pill px-3 py-2
-																									{% if order.status == 'pending' %}bg-warning text-dark
-																									{% elseif order.status == 'confirmed' %}bg-info text-white
-																									{% elseif order.status in ['shipped', 'delivered'] %}bg-success text-white
-																									{% elseif order.status == 'cancelled' %}bg-danger text-white
-																									{% else %}bg-secondary text-white{% endif %}">
+																																																																{% if order.status == 'pending' %}bg-warning text-dark
+																																																																{% elseif order.status == 'confirmed' %}bg-info text-white
+																																																																{% elseif order.status in ['shipped', 'delivered'] %}bg-success text-white
+																																																																{% elseif order.status == 'cancelled' %}bg-danger text-white
+																																																																{% else %}bg-secondary text-white{% endif %}">
 												{% if order.status == 'pending' %}En attente
 													{% elseif order.status == 'confirmed' %}Confirmée
 													{% elseif order.status == 'shipped' %}Expédiée

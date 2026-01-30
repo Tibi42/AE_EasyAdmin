@@ -19,3 +19,15 @@
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+
+# Added by ggshield
+.cache_ggshield
+
+# Added by ggshield
+.cache_ggshield
+
+# Added by ggshield
+.cache_ggshield
+
+# Added by ggshield
+.cache_ggshield
