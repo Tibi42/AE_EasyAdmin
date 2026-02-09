@@ -48,7 +48,7 @@
 						<a href="{{ path('app_about') }}" class="text-white-50 text-decoration-none hover-white">Domaine</a>
 					</li>
 					<li class="mb-2">
-						<a href="{{ path('app_home') }}" class="text-white-50 text-decoration-none hover-white">Mentions légales</a>
+						<a href="{{ path('app_mention_legal') }}" class="text-white-50 text-decoration-none hover-white">Mentions légales</a>
 					</li>
 				</ul>
 			</div>
@@ -98,7 +98,7 @@ method: 'POST',
 headers: {
 'Content-Type': 'application/x-www-form-urlencoded'
 },
-body: 'email=' + encodeURIComponent(email) + '&_token=    {{ csrf_token('newsletter_subscribe') }}'
+body: 'email=' + encodeURIComponent(email) + '&_token=     {{ csrf_token('newsletter_subscribe') }}'
 });
 const data = await response.json();
 

@@ -17,7 +17,7 @@ final class PageController extends AbstractController
 {
     /**
      * Affiche la page "À propos"
-     * 
+     *
      * @return Response Une instance de Response vers la vue à propos
      */
     #[Route('/a-propos', name: 'app_about')]

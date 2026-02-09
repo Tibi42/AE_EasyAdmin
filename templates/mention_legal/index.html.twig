@@ -1,0 +1,77 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mentions légales - La Coopé des Vignerons{% endblock %}
+
+{% block body %}
+<section class="py-5 bg-light">
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-lg-10 col-xl-8">
+				<div class="mb-4">
+					<h1 class="h2 fw-bold mb-2">Mentions légales</h1>
+					<p class="text-muted mb-0 small">Dernière mise à jour :
+						{{ 'now'|date('d/m/Y') }}</p>
+				</div>
+
+				<div class="card shadow-sm border-0">
+					<div class="card-body p-4 p-md-5">
+						<p class="mb-4">
+							Conformément aux dispositions de la loi n° 2004-575 du 21 juin 2004 pour la confiance en l'économie numérique, il est précisé aux utilisateurs du site <strong>La Coopé des Vignerons</strong> l'identité des différents intervenants dans le cadre de sa réalisation et de son suivi.
+						</p>
+
+						<h2 class="h5 fw-bold mt-3 mb-2">Éditeur du site</h2>
+						<p class="mb-3">
+							Le présent site, accessible à l’URL
+							<span class="text-primary">https://127.0.0.1:8000/</span>
+							(ci-après le « Site »), est édité par :
+						</p>
+						<p class="mb-3">
+							<strong>Guillaume Pecquet</strong>, résidant 8 rue des Lombards, 75004 Paris, de nationalité française, né le 03/01/1981.
+						</p>
+
+						<h2 class="h5 fw-bold mt-4 mb-2">Hébergement</h2>
+						<p class="mb-3">
+							Le Site est hébergé par la société <strong>OVH</strong>, située 2 rue de l'Échappée, 75010 Paris.
+						</p>
+						<p class="mb-3">
+							Contact hébergeur : +33 6 51 42 44 47.
+						</p>
+
+						<h2 class="h5 fw-bold mt-4 mb-2">Directeur de la publication</h2>
+						<p class="mb-3">
+							Le directeur de la publication du Site est
+							<strong>Guillaume Pecquet</strong>.
+						</p>
+
+						<h2 class="h5 fw-bold mt-4 mb-2">Nous contacter</h2>
+						<ul class="list-unstyled mb-3">
+							<li class="mb-1">
+								<strong>Par téléphone :</strong>
+								+33 6 51 42 44 47
+							</li>
+							<li class="mb-1">
+								<strong>Par email :</strong>
+								<a href="mailto:guillaume.pecquet@gmail.com" class="text-decoration-none">guillaume.pecquet@gmail.com</a>
+							</li>
+							<li class="mb-1">
+								<strong>Par courrier :</strong>
+								8 rue des Lombards, 75004 Paris
+							</li>
+						</ul>
+
+						<h2 class="h5 fw-bold mt-4 mb-2">Données personnelles</h2>
+						<p class="mb-3">
+							Le traitement de vos données à caractère personnel est régi par notre Charte du respect de la vie privée, disponible depuis la section
+							<strong>« Charte de Protection des Données Personnelles »</strong>, conformément au Règlement Général sur la Protection des Données 2016/679 du 27 avril 2016 (« RGPD »).
+						</p>
+
+						<p class="mt-4 mb-0 text-muted small">
+							Génération des mentions légales par Legalstart.
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+{% endblock %}

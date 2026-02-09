@@ -56,7 +56,7 @@
 			<div
 				class="d-flex align-items-center gap-2 gap-lg-3">
 				{# Barre de recherche #}
-				<div class="position-relative" data-controller="live-search">
+				<div class="position-relative" data-controller="live-search" data-live-search-url-value="{{ path('api_product_search') }}">
 					<form class="d-flex" role="search">
 						<div class="input-group input-group-sm">
 							<input type="text" name="q" class="form-control rounded-start-3" placeholder="Rechercher..." data-live-search-target="input" data-action="input->live-search#onSearch blur->live-search#hideResults" autocomplete="off" style="min-width: 120px; width: 120px;">
@@ -65,7 +65,7 @@
 							</button>
 						</div>
 					</form>
-					<div class="search-results position-absolute w-100 shadow-sm bg-white" data-live-search-target="results" style="z-index: 1050; top: 100%; left: 0; display: none;"></div>
+					<div class="search-results position-absolute w-100 shadow-sm bg-white" data-live-search-target="results" style="z-index: 1050; top: 100%; left: 0;"></div>
 				</div>
 
 				{# Bouton Admin (desktop uniquement) #}
