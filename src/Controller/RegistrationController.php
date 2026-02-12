@@ -11,6 +11,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\RateLimiter\RateLimiterFactory;
 
 /**
  * Contrôleur gérant l'inscription des nouveaux utilisateurs
@@ -35,7 +37,8 @@ class RegistrationController extends AbstractController
         UserPasswordHasherInterface $userPasswordHasher,
         Security $security,
         EntityManagerInterface $entityManager,
-        \Symfony\Component\RateLimiter\RateLimiterFactory $registrationLimiter
+        #[Autowire(service: 'limiter.registration')]
+        RateLimiterFactory $registrationLimiter
     ): Response {
         $limiter = $registrationLimiter->create($request->getClientIp());
         if (false === $limiter->consume(1)->isAccepted()) {
