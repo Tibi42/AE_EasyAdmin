@@ -6,12 +6,22 @@ use App\Entity\Category;
 use App\Entity\Product;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Faker\Factory;
 
 /**
- * Fixtures pour générer un catalogue de produits de test
+ * Fixtures pour générer un catalogue de produits de test.
  */
 class ProductFixtures extends Fixture
 {
+    /** Images locales dans public/uploads/products/ (nom de fichier uniquement) */
+    private const CATEGORY_IMAGES = [
+        'vins-rouges' => 'red-wine.png',
+        'vins-blancs' => 'white-wine.png',
+        'vins-roses' => 'rose-wine.png',
+        'champagnes-bulles' => 'champagne.png',
+        'epicerie-fine' => 'vinegar.png',
+    ];
+
     public function load(ObjectManager $manager): void
     {
         // Catégories de Vins
@@ -144,11 +154,27 @@ class ProductFixtures extends Fixture
             $product->setStock($productData['stock']);
             $product->setCategory($categoryEntities[$productData['category']]->getName());
 
-            // Image aléatoire unique basée sur le nom du produit
-            $product->setImageName(sprintf('https://picsum.photos/seed/%s/800/800', md5($productData['name'])));
+            // Image locale selon la catégorie (public/uploads/products/)
+            $product->setImageName(self::CATEGORY_IMAGES[$productData['category']] ?? null);
 
             $manager->persist($product);
         }
+        // Produits générés par Faker (nombre contrôlé par FAKER_PRODUCT_COUNT)
+        $faker = Factory::create('fr_FR');
+        $wineCategories = ['Vins Rouges', 'Vins Blancs', 'Vins Rosés', 'Champagnes & Bulles'];
+        for ($i = 0; $i < 40; $i++) {
+            $product = new Product();
+            $product->setName($faker->word(3, true));
+            $product->setDescription($faker->sentence());
+            $product->setPrice($faker->randomFloat(2, 10, 500));
+            $product->setStock($faker->numberBetween(10, 100));
+            $product->setCategory($faker->randomElement($wineCategories));
+            $slug = $faker->randomElement(['vins-rouges', 'vins-blancs', 'vins-roses', 'champagnes-bulles']);
+            $product->setImageName(self::CATEGORY_IMAGES[$slug] ?? 'red-wine.png');
+            $product->setIsFeatured($faker->boolean(20));
+            $manager->persist($product);
+        }
+
 
         $manager->flush();
     }

@@ -36,7 +36,7 @@
 		{% endblock %}
 	</head>
 	<body
-		data-controller="modal">
+		data-controller="modal cookie">
 		{# Composant En-tête : contient le bandeau d'info, la navigation et les actions utilisateur #}
 		{% include 'components/header.html.twig' %}
 
@@ -55,6 +55,42 @@
 
 		{# Composant Pied de page : contient les liens utiles, les réseaux sociaux et le copyright #}
 		{% include 'components/footer.html.twig' %}
+
+		{# Bandeau de consentement cookies (fixe en bas d'écran, visible par défaut si pas de consentement) #}
+		<div class="cookie-consent-bar-wrapper" data-cookie-target="bar" role="dialog" aria-label="Choix des cookies" id="cookie-consent-bar">
+			<div class="container">
+				<div class="cookie-consent-bar rounded-3 p-3 shadow">
+					<div class="row align-items-center g-3">
+						<div class="col-lg-7">
+							<p class="mb-0 small text-dark">
+								<i class="fas fa-cookie-bite me-2 text-primary" aria-hidden="true"></i>
+								Nous utilisons des cookies pour le fonctionnement du site, l'analyse du trafic et la personnalisation.
+								<a href="#" class="text-primary text-decoration-underline fw-medium ms-1" data-turbo="false" data-action="click->cookie#openPreferences:prevent">Gérer les préférences</a>
+							</p>
+						</div>
+						<div class="col-lg-5 d-flex flex-wrap gap-2 justify-content-lg-end">
+							<button type="button" class="btn btn-outline-secondary btn-sm" id="cookie-refuse-btn">
+								Refuser les cookies non essentiels
+							</button>
+							<button type="button" class="btn btn-primary btn-sm" id="cookie-accept-btn">
+								Tout accepter
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			(function(){
+				var KEY = 'cookie_consent';
+				var bar = document.getElementById('cookie-consent-bar');
+				function hideBar(){ if(bar) bar.classList.add('d-none'); }
+				function setConsent(obj){ try{ localStorage.setItem(KEY, JSON.stringify(obj)); }catch(e){} hideBar(); }
+				if(localStorage.getItem(KEY)) hideBar();
+				document.getElementById('cookie-accept-btn')?.addEventListener('click', function(){ setConsent({essential:true,analytics:true,marketing:true}); });
+				document.getElementById('cookie-refuse-btn')?.addEventListener('click', function(){ setConsent({essential:true,analytics:false,marketing:false}); });
+			})();
+		</script>
 
 		<!-- Modale Produit (Bootstrap 5) -->
 		<div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true" data-modal-target="dialog">
@@ -98,6 +134,47 @@
 								</div>
 							</div>
 						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		{# Modale Gestion des cookies #}
+		<div class="modal fade" id="cookieModal" tabindex="-1" aria-labelledby="cookieModalLabel" aria-hidden="true" data-cookie-target="modal">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+					<div class="modal-header border-0 pb-0">
+						<h2 class="modal-title fw-bold" id="cookieModalLabel">
+							<i class="fas fa-cookie-bite text-primary me-2" aria-hidden="true"></i>
+							Gestion des cookies
+						</h2>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+					</div>
+					<div class="modal-body pt-2">
+						<p class="text-muted small mb-4">Nous utilisons des cookies pour le fonctionnement du site, l'analyse du trafic et la personnalisation. Cochez les types de cookies que vous acceptez.</p>
+						<div class="cookie-modal-choices">
+							<div class="form-check form-check-lg mb-3 py-2 px-3 bg-light rounded">
+								<input type="checkbox" class="form-check-input" id="cookie-modal-essential" disabled checked>
+								<label class="form-check-label fw-medium" for="cookie-modal-essential">Essentiels</label>
+								<p class="small text-muted mb-0 mt-1">Nécessaires au fonctionnement du site (toujours actifs)</p>
+							</div>
+							<div class="form-check form-check-lg mb-3 py-2 px-3 bg-light rounded">
+								<input type="checkbox" class="form-check-input" id="cookie-modal-analytics" data-cookie-target="analyticsCheckbox">
+								<label class="form-check-label fw-medium" for="cookie-modal-analytics">Analytics</label>
+								<p class="small text-muted mb-0 mt-1">Mesure d'audience et statistiques de visite</p>
+							</div>
+							<div class="form-check form-check-lg mb-3 py-2 px-3 bg-light rounded">
+								<input type="checkbox" class="form-check-input" id="cookie-modal-marketing" data-cookie-target="marketingCheckbox">
+								<label class="form-check-label fw-medium" for="cookie-modal-marketing">Marketing</label>
+								<p class="small text-muted mb-0 mt-1">Publicité et personnalisation des contenus</p>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer border-0 pt-0">
+						<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fermer</button>
+						<button type="button" class="btn btn-primary" data-action="click->cookie#savePreferences" data-cookie-target="savePreferences">
+							Enregistrer mes choix
+						</button>
 					</div>
 				</div>
 			</div>

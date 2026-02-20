@@ -44,6 +44,31 @@ php bin/console doctrine:fixtures:load
 > [!WARNING]
 > Cette commande supprime **toutes** les données existantes en base avant d'insérer les fixtures.
 
+### Charger moins de fixtures
+
+**1. Réduire le nombre de produits Faker**  
+Dans `ProductFixtures.php`, modifie la constante en haut de la classe :
+
+```php
+private const FAKER_PRODUCT_COUNT = 10;  // ex. 5 pour encore moins de produits
+```
+
+Par défaut : 10 produits générés par Faker (en plus des ~13 produits fixes). Mets 0 pour désactiver les produits Faker.
+
+**2. Charger uniquement certaines fixtures (groupes)**  
+Si tu ajoutes des groupes à tes fixtures (`getGroups()`), tu peux charger uniquement un groupe :
+
+```bash
+php bin/console doctrine:fixtures:load --group=users
+```
+
+**3. Ajouter sans tout effacer**  
+Pour ajouter des fixtures sans purger la base (attention aux doublons) :
+
+```bash
+php bin/console doctrine:fixtures:load --append
+```
+
 ## Structure des données
 
 ### Catégories et Produits

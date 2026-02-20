@@ -12,7 +12,7 @@
         "doctrine/orm": "^3.6",
         "easycorp/easyadmin-bundle": "^4.27",
         "knplabs/knp-paginator-bundle": "^6.10",
-        "phpdocumentor/reflection-docblock": "^6.0",
+        "phpdocumentor/reflection-docblock": "^5.6.6",
         "phpstan/phpdoc-parser": "^2.3",
         "stripe/stripe-php": "^19.2",
         "symfony/asset": "8.0.*",
@@ -104,6 +104,7 @@
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^4.3",
+        "fakerphp/faker": "^1.24.1",
         "phpunit/phpunit": "^12.5",
         "symfony/browser-kit": "8.0.*",
         "symfony/css-selector": "8.0.*",

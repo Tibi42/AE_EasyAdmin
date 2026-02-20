@@ -12,6 +12,8 @@
 @import 'components/pagination.css';
 @import 'components/chat.css';
 @import 'components/search.css';
+@import 'components/footer.css';
+@import 'components/cookie.css';
 
 /* Pages */
 @import 'pages/home.css';
