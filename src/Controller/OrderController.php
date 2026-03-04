@@ -222,10 +222,14 @@ class OrderController extends AbstractController
         $entityManager->flush();
 
         try {
+            // URL de succès avec placeholder Stripe NON encodé
+            $successUrl = $this->generateUrl('app_order_success', [], UrlGeneratorInterface::ABSOLUTE_URL)
+                . '?session_id={CHECKOUT_SESSION_ID}';
+
             // Création de la session Stripe Checkout
             $checkoutSession = $stripeService->createCheckoutSession(
                 $order,
-                $this->generateUrl('app_order_success', ['session_id' => '{CHECKOUT_SESSION_ID}'], UrlGeneratorInterface::ABSOLUTE_URL),
+                $successUrl,
                 $this->generateUrl('app_order_cancel', ['id' => $order->getId()], UrlGeneratorInterface::ABSOLUTE_URL)
             );
 

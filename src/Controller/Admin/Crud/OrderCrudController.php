@@ -12,6 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -36,7 +37,8 @@ class OrderCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        yield IdField::new('id', 'ID');
+        yield IdField::new('id', 'ID')
+            ->hideOnForm();
 
         yield AssociationField::new('user', 'Utilisateur')
             ->setRequired(true);
@@ -58,25 +60,20 @@ class OrderCrudController extends AbstractCrudController
             ->setRequired(true);
 
         if ($pageName === Crud::PAGE_INDEX || $pageName === Crud::PAGE_DETAIL) {
-            yield Field::new('dateat', 'Date')
-                ->formatValue(function ($value) {
-                    return $value instanceof \DateTimeInterface ? $value->format('d/m/Y H:i') : '-';
-                })
+            yield DateTimeField::new('dateat', 'Date')
+                ->setFormat('dd/MM/yyyy HH:mm')
                 ->setTemplatePath('admin/field/date.html.twig');
         } else {
-            yield TextField::new('dateat', 'Date')
-                ->setFormType(\Symfony\Component\Form\Extension\Core\Type\DateTimeType::class)
-                ->setFormTypeOptions([
-                    'widget' => 'single_text',
-                    'html5' => false,
-                    'format' => 'dd/MM/yyyy HH:mm',
-                ])
+            yield DateTimeField::new('dateat', 'Date')
+                ->setFormTypeOption('widget', 'single_text')
+                ->setFormTypeOption('html5', true)
                 ->setRequired(true);
         }
 
+        // Affichage des lignes de commande seulement sur la vue détail (pas d'édition en profondeur dans le formulaire)
         yield CollectionField::new('orderItems', 'Articles')
             ->useEntryCrudForm()
-            ->hideOnIndex();
+            ->onlyOnDetail();
 
         yield TextField::new('stripeSessionId', 'Session Stripe')
             ->hideOnIndex()
@@ -93,21 +90,15 @@ class OrderCrudController extends AbstractCrudController
             ->hideOnIndex();
 
         if ($pageName === Crud::PAGE_INDEX || $pageName === Crud::PAGE_DETAIL) {
-            yield Field::new('shippedAt', 'Date d\'expédition')
-                ->formatValue(function ($value) {
-                    return $value instanceof \DateTimeInterface ? $value->format('d/m/Y H:i') : '-';
-                })
+            yield DateTimeField::new('shippedAt', 'Date d\'expédition')
+                ->setFormat('dd/MM/yyyy HH:mm')
                 ->setTemplatePath('admin/field/date.html.twig')
                 ->hideOnIndex();
         } else {
-            yield TextField::new('shippedAt', 'Date d\'expédition')
-                ->setFormType(\Symfony\Component\Form\Extension\Core\Type\DateTimeType::class)
-                ->setFormTypeOptions([
-                    'widget' => 'single_text',
-                    'html5' => false,
-                    'format' => 'dd/MM/yyyy HH:mm',
-                    'required' => false,
-                ])
+            yield DateTimeField::new('shippedAt', 'Date d\'expédition')
+                ->setFormTypeOption('widget', 'single_text')
+                ->setFormTypeOption('html5', true)
+                ->setRequired(false)
                 ->hideOnIndex();
         }
     }
