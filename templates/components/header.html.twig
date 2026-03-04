@@ -55,8 +55,8 @@
 			{# Actions utilisateur - Droite #}
 			<div
 				class="d-flex align-items-center gap-2 gap-lg-3">
-				{# Barre de recherche #}
-				<div class="position-relative" data-controller="live-search" data-live-search-url-value="{{ path('api_product_search') }}">
+				{# Barre de recherche (cachée sur très petits écrans pour laisser la place aux icônes) #}
+				<div class="position-relative d-none d-md-block" data-controller="live-search" data-live-search-url-value="{{ path('api_product_search') }}">
 					<form class="d-flex" role="search">
 						<div class="input-group input-group-sm">
 							<input type="text" name="q" class="form-control rounded-start-3" placeholder="Rechercher..." data-live-search-target="input" data-action="input->live-search#onSearch blur->live-search#hideResults" autocomplete="off" style="min-width: 120px; width: 120px;">

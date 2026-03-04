@@ -37,7 +37,8 @@
 								</button>
 							</div>
 
-							<div class="table-responsive">
+							{# Vue tableau pour écrans moyens et grands #}
+							<div class="table-responsive d-none d-md-block">
 								<table class="table table-hover align-middle mb-0">
 									<thead class="table-light">
 										<tr>
@@ -97,12 +98,63 @@
 									</tbody>
 								</table>
 							</div>
+
+							{# Vue cartes pour mobile #}
+							<div class="d-block d-md-none px-3 pb-3 pt-2">
+								{% for item in cart %}
+									<div class="card border-0 shadow-sm rounded-4 mb-3">
+										<div class="card-body">
+											<div class="d-flex align-items-center mb-3">
+												<input type="checkbox" name="ids[]" value="{{ item.product.id }}" class="item-checkbox form-check-input me-2">
+												<div class="rounded-3 border overflow-hidden me-3 bg-light d-flex align-items-center justify-content-center shadow-sm" style="width: 60px; height: 60px; flex-shrink: 0;">
+													{% if item.product.imageName %}
+														<img src="{{ item.product.imageName matches '/^https?:\\/\\//' ? item.product.imageName : asset('uploads/products/' ~ item.product.imageName) }}" alt="{{ item.product.name }}" class="img-fluid w-100 h-100 object-fit-cover">
+													{% else %}
+														<span class="fs-5 text-muted">📦</span>
+													{% endif %}
+												</div>
+												<div class="flex-grow-1">
+													<h6 class="mb-1 fw-bold">{{ item.product.name }}</h6>
+													<small class="text-muted text-uppercase" style="font-size: 0.7rem;">{{ item.product.category ?? 'Vin' }}</small>
+												</div>
+												<a href="{{ path('cart_delete', {'id': item.product.id}) }}" class="btn btn-link link-danger p-0 ms-2" aria-label="Supprimer {{ item.product.name }} du panier" onclick="return confirm('Supprimer tous les articles de ce produit ?')">
+													<i class="fas fa-trash-can" aria-hidden="true"></i>
+												</a>
+											</div>
+
+											<div class="d-flex justify-content-between align-items-center mb-2">
+												<span class="text-muted small">Prix unitaire</span>
+												<span class="fw-bold">{{ item.product.price|number_format(2, ',', ' ') }} €</span>
+											</div>
+
+											<div class="d-flex justify-content-between align-items-center mb-2">
+												<span class="text-muted small">Quantité</span>
+												<div class="d-inline-flex align-items-center bg-light border rounded-pill p-1">
+													<a href="{{ path('cart_remove', {'id': item.product.id}) }}" class="btn btn-sm btn-light rounded-circle p-0 d-flex align-items-center justify-content-center" style="width: 24px; height: 24px;" aria-label="Retirer une unité de {{ item.product.name }}">
+														<i class="fas fa-minus x-small" aria-hidden="true"></i>
+													</a>
+													<input type="number" id="qty-mobile-{{ item.product.id }}" value="{{ item.quantity }}" class="form-control form-control-sm border-0 text-center fw-bold bg-transparent p-0 mx-1" style="width: 40px; box-shadow: none;" min="1" disabled aria-label="Quantité pour {{ item.product.name }}">
+													<a href="{{ path('cart_add', {'id': item.product.id}) }}" class="btn btn-sm btn-light rounded-circle p-0 d-flex align-items-center justify-content-center" style="width: 24px; height: 24px;" aria-label="Ajouter une unité de {{ item.product.name }}">
+														<i class="fas fa-plus x-small" aria-hidden="true"></i>
+													</a>
+												</div>
+											</div>
+
+											<div class="d-flex justify-content-between align-items-center">
+												<span class="text-muted small">Total</span>
+												<span class="fw-bold text-primary">{{ (item.product.price * item.quantity)|number_format(2, ',', ' ') }} €</span>
+											</div>
+										</div>
+									</div>
+								{% endfor %}
+							</div>
 						</form>
 					</div>
 				</div>
 
 				<div class="col-lg-4">
-					<div class="card border-0 shadow-sm rounded-4 sticky-top" style="top: 100px; z-index: 10;">
+					{# Résumé sticky sur grands écrans #}
+					<div class="card border-0 shadow-sm rounded-4 sticky-top d-none d-lg-block" style="top: 100px; z-index: 10;">
 						<div class="card-body p-4">
 							<h2 class="h4 fw-bold mb-4">Résumé</h2>
 							<div class="d-flex justify-content-between mb-3 text-muted">
@@ -132,6 +184,43 @@
 									<i class="fab fa-cc-mastercard fa-2x text-warning" role="img" aria-label="Mastercard"></i>
 									<i class="fab fa-cc-paypal fa-2x text-info" role="img" aria-label="PayPal"></i>
 									<i class="fab fa-cc-stripe fa-2x text-secondary" role="img" aria-label="Stripe"></i>
+								</div>
+								<p class="small text-muted mb-0">
+									<i class="fas fa-shield-alt me-1 text-success"></i>
+									Paiement 100% sécurisé</p>
+							</div>
+						</div>
+					</div>
+
+					{# Résumé plein largeur pour mobile et tablettes #}
+					<div class="card border-0 shadow-sm rounded-4 d-lg-none">
+						<div class="card-body p-4">
+							<h2 class="h5 fw-bold mb-3">Résumé</h2>
+							<div class="d-flex justify-content-between mb-2 text-muted small">
+								<span>Sous-total</span>
+								<span class="fw-bold text-dark">{{ total|number_format(2, ',', ' ') }} €</span>
+							</div>
+							<div class="d-flex justify-content-between mb-3 text-muted small">
+								<span>Livraison</span>
+								<span class="text-success fw-bold">Gratuite</span>
+							</div>
+							<hr class="mb-3">
+							<div class="d-flex justify-content-between mb-3 align-items-center">
+								<span class="fw-bold">Total</span>
+								<span class="h5 fw-bold text-primary mb-0">{{ total|number_format(2, ',', ' ') }} €</span>
+							</div>
+
+							<a href="{{ path('app_order_checkout') }}" class="btn btn-primary w-100 rounded-3 mb-2 py-2 fw-bold">
+								Commander
+								<i class="fas fa-arrow-right ms-2"></i>
+							</a>
+
+							<div class="text-center mt-2">
+								<div class="d-flex justify-content-center align-items-center gap-2 mb-2" role="group" aria-label="Modes de paiement disponibles">
+									<i class="fab fa-cc-visa text-primary" role="img" aria-label="Visa"></i>
+									<i class="fab fa-cc-mastercard text-warning" role="img" aria-label="Mastercard"></i>
+									<i class="fab fa-cc-paypal text-info" role="img" aria-label="PayPal"></i>
+									<i class="fab fa-cc-stripe text-secondary" role="img" aria-label="Stripe"></i>
 								</div>
 								<p class="small text-muted mb-0">
 									<i class="fas fa-shield-alt me-1 text-success"></i>
