@@ -95,7 +95,7 @@ final class ProductController extends AbstractController
     #[Route('/api/search', name: 'api_product_search', methods: ['GET'])]
     public function search(ProductRepository $productRepository, Request $request): Response
     {
-        $q = $request->query->get('q');
+        $q = $request->query->get('currentSearchTerm');
         if (!$q || strlen($q) < 2) {
             return $this->json([]);
         }

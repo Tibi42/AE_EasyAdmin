@@ -14,7 +14,7 @@ export default class extends Controller {
         if (consent !== null) {
             this.hideBar();
         }
-        // Si pas de consentement : le bandeau reste visible (pas de d-none dans le HTML)
+        // Si pas de consentement : le bandeau reste visible 
     }
 
     getConsent() {

@@ -26,7 +26,7 @@ when@test:
 when@prod:
     framework:
         # Active le cache HTTP en production
-        http_cache:
-            enabled: true
+       # http_cache:
+           # enabled: true
             # Durée de vie par défaut du cache (5 minutes)
-            default_ttl: 300
+           # default_ttl: 300

@@ -58,5 +58,6 @@ class UserChecker implements UserCheckerInterface
     {
         // Pas de vérification supplémentaire après l'authentification
         // Toutes les vérifications sont effectuées dans checkPreAuth
+        
     }
 }

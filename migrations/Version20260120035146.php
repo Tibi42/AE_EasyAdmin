@@ -18,11 +18,12 @@ final class Version20260120035146 extends AbstractMigration
     }
 
     public function up(Schema $schema): void
-    {
-        // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE `order` CHANGE user_id user_id INT NOT NULL');
-        $this->addSql('ALTER TABLE `order` ADD CONSTRAINT FK_F5299398A76ED395 FOREIGN KEY (user_id) REFERENCES user (id)');
-    }
+  {
+      $this->addSql('ALTER TABLE `order` DROP FOREIGN KEY FK_F5299398A76ED395');
+      $this->addSql('ALTER TABLE `order` CHANGE user_id user_id INT NOT NULL');
+      $this->addSql('ALTER TABLE `order` ADD CONSTRAINT FK_F5299398A76ED395 FOREIGN KEY (user_id) REFERENCES user
+  (id)');
+  }
 
     public function down(Schema $schema): void
     {
