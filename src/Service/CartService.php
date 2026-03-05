@@ -62,15 +62,20 @@ class CartService
      * Ajoute un produit au panier ou incrémente sa quantité
      * 
      * @param int $id L'identifiant du produit à ajouter
+     * @param int $quantity Quantité à ajouter (par défaut 1)
      */
-    public function add(int $id): void
+    public function add(int $id, int $quantity = 1): void
     {
+        if ($quantity < 1) {
+            $quantity = 1;
+        }
+
         $cart = $this->getSession()->get('cart', []);
 
         if (!empty($cart[$id])) {
-            $cart[$id]++;
+            $cart[$id] += $quantity;
         } else {
-            $cart[$id] = 1;
+            $cart[$id] = $quantity;
         }
 
         $this->getSession()->set('cart', $cart);

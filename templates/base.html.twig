@@ -115,14 +115,27 @@
 								</div>
 
 								<div class="mt-auto pt-4 border-top">
-									<div class="d-flex align-items-center justify-content-between mb-4">
+									<div class="d-flex align-items-center justify-content-between mb-3">
 										<span class="fs-4 text-muted">Prix :</span>
 										<span class="fs-2 fw-bold text-primary" data-modal-target="price">0.00 €</span>
 									</div>
 
+									<div class="mb-3">
+										<span class="text-muted small d-block mb-1">Quantité</span>
+										<div class="d-inline-flex align-items-center bg-light border rounded-pill p-1">
+											<button type="button" class="btn btn-sm btn-light rounded-circle p-0 d-flex align-items-center justify-content-center" style="width: 28px; height: 28px;" aria-label="Diminuer la quantité" data-action="click->modal#decreaseQuantity">
+												<i class="fas fa-minus small" aria-hidden="true"></i>
+											</button>
+											<input type="number" min="1" max="99" value="1" data-modal-target="quantity" class="form-control form-control-sm border-0 text-center fw-bold bg-transparent p-0 mx-1" style="width: 45px; box-shadow: none;" aria-label="Quantité">
+											<button type="button" class="btn btn-sm btn-light rounded-circle p-0 d-flex align-items-center justify-content-center" style="width: 28px; height: 28px;" aria-label="Augmenter la quantité" data-action="click->modal#increaseQuantity">
+												<i class="fas fa-plus small" aria-hidden="true"></i>
+											</button>
+										</div>
+									</div>
+
 									<div class="row g-2">
 										<div class="col-8">
-											<a href="#" class="btn btn-primary btn-lg w-100 rounded-3 fw-bold py-3" data-modal-target="addToCartLink">
+											<a href="#" class="btn btn-primary btn-lg w-100 rounded-3 fw-bold py-3" data-modal-target="addToCartLink" data-action="click->modal#addToCart">
 												<i class="fas fa-cart-plus me-2"></i>
 												Ajouter au panier
 											</a>
@@ -131,6 +144,7 @@
 											<button type="button" class="btn btn-outline-secondary btn-lg w-100 rounded-3 py-3" data-bs-dismiss="modal">Fermer</button>
 										</div>
 									</div>
+									<div class="mt-3 d-none alert small" data-modal-target="feedback" role="status"></div>
 								</div>
 							</div>
 						</div>

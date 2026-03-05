@@ -1,0 +1,22 @@
+<h1>Confirmation de votre commande</h1>
+
+<p>Bonjour {{ user.firstName ?? user.email }},</p>
+
+<p>Nous vous confirmons la bonne réception de votre commande n°{{ order.id }}.</p>
+
+<p>Détail de votre commande :</p>
+<ul>
+    {% for item in order.orderItems %}
+        <li>
+            {{ item.quantity }} × {{ item.productName }} - {{ item.total }} €
+        </li>
+    {% endfor %}
+</ul>
+
+<p>Total : <strong>{{ order.total }} €</strong></p>
+
+<p>Vous pouvez retrouver cette commande dans votre espace « Mes commandes » sur le site.</p>
+
+<p>Merci pour votre confiance,<br>
+L’équipe Auxilia E-commerce</p>
+

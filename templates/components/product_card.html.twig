@@ -31,7 +31,7 @@
 			<button class="btn btn-outline-primary btn-sm flex-grow-1 fw-bold rounded-pill" aria-label="Voir les détails de {{ product.name }}">
 				Détails
 			</button>
-			<a href="{{ path('cart_add', {id: product.id}) }}" class="btn btn-primary btn-sm rounded-circle d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;" aria-label="Ajouter {{ product.name }} au panier" data-action="click->modal#stopPropagation">
+			<a href="{{ path('cart_add', {id: product.id}) }}" class="btn btn-primary btn-sm rounded-circle d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;" aria-label="Ajouter {{ product.name }} au panier" data-action="click->modal#quickAdd">
 				<i class="fas fa-cart-plus fa-sm" aria-hidden="true"></i>
 			</a>
 		</div>

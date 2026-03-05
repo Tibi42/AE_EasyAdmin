@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\ProductRepository;
+use Doctrine\DBAL\Exception as DBALException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -19,10 +20,18 @@ final class HomeController extends AbstractController
     public function index(ProductRepository $productRepository, \App\Repository\TestimonialRepository $testimonialRepository): Response
     {
         // Récupère les produits mis en avant pour la section "Produits à la une" (avec cache)
-        $featuredProducts = $productRepository->findFeaturedProducts(8);
+        try {
+            $featuredProducts = $productRepository->findFeaturedProducts(8);
+        } catch (DBALException $e) {
+            $featuredProducts = [];
+        }
 
         // Récupère les témoignages approuvés depuis la base de données
-        $dbTestimonials = $testimonialRepository->findApproved(3);
+        try {
+            $dbTestimonials = $testimonialRepository->findApproved(3);
+        } catch (DBALException $e) {
+            $dbTestimonials = [];
+        }
 
         $testimonials = [];
         foreach ($dbTestimonials as $t) {

@@ -4,6 +4,7 @@ namespace App\Twig;
 
 use App\Service\CartService;
 use App\Repository\CategoryRepository;
+use Doctrine\DBAL\Exception as DBALException;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -47,6 +48,10 @@ class AppExtension extends AbstractExtension
      */
     public function getCategories(): array
     {
-        return $this->categoryRepository->findAllOrderedByName();
+        try {
+            return $this->categoryRepository->findAllOrderedByName();
+        } catch (DBALException $e) {
+            return [];
+        }
     }
 }

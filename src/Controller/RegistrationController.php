@@ -9,6 +9,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email as MimeEmail;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -35,6 +37,7 @@ class RegistrationController extends AbstractController
     public function register(
         Request $request,
         UserPasswordHasherInterface $userPasswordHasher,
+        MailerInterface $mailer,
         Security $security,
         EntityManagerInterface $entityManager,
         #[Autowire(service: 'limiter.registration')]
@@ -58,6 +61,20 @@ class RegistrationController extends AbstractController
             // Persistance de l'utilisateur en base de données
             $entityManager->persist($user);
             $entityManager->flush();
+
+            $from = getenv('MAILER_FROM') ?: 'guillaume.pecquet@gmail.com';
+
+            try {
+                $email = (new MimeEmail())
+                    ->from($from)
+                    ->to($user->getEmail())
+                    ->subject('Bienvenue sur Auxilia E-commerce')
+                    ->html($this->renderView('emails/registration_confirmation.html.twig', [
+                        'user' => $user,
+                    ]));
+                $mailer->send($email);
+            } catch (\Throwable) {
+            }
 
             // Connexion automatique de l'utilisateur après inscription
             return $security->login($user, 'form_login', 'main');

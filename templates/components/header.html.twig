@@ -92,14 +92,16 @@
 				{% endif %}
 
 				{# Panier #}
-				<a href="{{ path('cart_index') }}" class="position-relative text-dark text-decoration-none p-1" aria-label="Voir mon panier ({{ cart_count() }} articles)">
+				{% set headerCartCount = cart_count() %}
+				<a href="{{ path('cart_index') }}" class="position-relative text-dark text-decoration-none p-1" aria-label="Voir mon panier ({{ headerCartCount }} articles)">
 					<i class="fas fa-shopping-basket fa-lg" aria-hidden="true"></i>
-					{% if cart_count() > 0 %}
-						<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary" style="font-size: 0.5rem; padding: 0.25em 0.4em;">
-							{{ cart_count() }}
-							<span class="visually-hidden">articles dans le panier</span>
-						</span>
-					{% endif %}
+					<span
+						class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary {% if headerCartCount == 0 %}d-none{% endif %}"
+						style="font-size: 0.5rem; padding: 0.25em 0.4em;"
+						data-cart-badge>
+						{{ headerCartCount }}
+						<span class="visually-hidden">articles dans le panier</span>
+					</span>
 				</a>
 			</div>
 		</div>

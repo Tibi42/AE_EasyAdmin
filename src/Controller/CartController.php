@@ -31,7 +31,18 @@ final class CartController extends AbstractController
     #[Route('/cart/add/{id}', name: 'cart_add')]
     public function add(int $id, CartService $cartService, Request $request): Response
     {
-        $cartService->add($id);
+        $quantity = max(1, (int) $request->query->get('quantity', 1));
+        $cartService->add($id, $quantity);
+
+        // Réponse optimisée pour les requêtes AJAX (ne pas recharger la page)
+        if ($request->isXmlHttpRequest()) {
+            return $this->json([
+                'success' => true,
+                'message' => 'Produit ajouté au panier avec succès !',
+                'count' => $cartService->getQuantitySum(),
+            ]);
+        }
+
         $this->addFlash('success', 'Produit ajouté au panier avec succès !');
 
         $referer = $request->headers->get('referer');

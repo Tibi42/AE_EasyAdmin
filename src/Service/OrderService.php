@@ -5,6 +5,9 @@ namespace App\Service;
 use App\Entity\Order;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email as MimeEmail;
+use Twig\Environment;
 
 /**
  * Service gérant les opérations sur les commandes
@@ -13,7 +16,9 @@ class OrderService
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private LoggerInterface $logger
+        private LoggerInterface $logger,
+        private MailerInterface $mailer,
+        private Environment $twig
     ) {}
 
     /**
@@ -59,6 +64,29 @@ class OrderService
 
             $this->entityManager->flush();
             $this->logger->info('OrderService: Payment completion successful for order ' . $order->getId());
+
+            $user = $order->getUser();
+            if ($user && $user->getEmail()) {
+                $from = getenv('MAILER_FROM') ?: 'guillaume.pecquet@gmail.com';
+
+                try {
+                    $email = (new MimeEmail())
+                        ->from($from)
+                        ->to($user->getEmail())
+                        ->subject('Confirmation de votre commande #' . $order->getId())
+                        ->html($this->twig->render('emails/order_confirmation.html.twig', [
+                            'order' => $order,
+                            'user' => $user,
+                        ]));
+
+                    $this->mailer->send($email);
+                    $this->logger->info('OrderService: Order confirmation email sent for order ' . $order->getId());
+                } catch (\Throwable $e) {
+                    $this->logger->error('OrderService: Failed to send order confirmation email: ' . $e->getMessage(), [
+                        'order_id' => $order->getId(),
+                    ]);
+                }
+            }
         } catch (\Exception $e) {
             $this->logger->error('OrderService: Error during payment completion: ' . $e->getMessage(), [
                 'order_id' => $order->getId()
