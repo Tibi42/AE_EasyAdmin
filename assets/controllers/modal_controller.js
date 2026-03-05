@@ -62,30 +62,42 @@ export default class extends Controller {
         this._setLoading(btn, true);
         this._hideFeedback();
 
-        let finalUrl = url;
-        try {
-            const urlObj = new URL(url, window.location.origin);
-            if (this.hasQuantityTarget) {
-                const qty = Math.max(1, Math.min(99, parseInt(this.quantityTarget.value, 10) || 1));
-                urlObj.searchParams.set('quantity', qty);
-            }
-            finalUrl = urlObj.toString();
-        } catch (_) {
-            // on garde l'URL de base si la construction échoue
-        }
+        const qty = this.hasQuantityTarget
+            ? Math.max(1, Math.min(99, parseInt(this.quantityTarget.value, 10) || 1))
+            : 1;
 
         try {
-            const response = await fetch(finalUrl, {
-                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            const body = new URLSearchParams();
+            body.append('quantity', qty);
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: body.toString(),
             });
 
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-            const data = await response.json();
-            this._showFeedback('success', data.message || 'Produit ajouté au panier !');
-            this._updateBadge(data.count);
+            const text = await response.text();
+            let data = {};
+            try {
+                data = this._safeJsonParse(text);
+            } catch (parseErr) {
+                console.warn('Réponse non JSON lors de la mise à jour du panier, utilisation du fallback.', parseErr, text);
+            }
+
+            this._showFeedback('success', data.message || 'Quantité mise à jour dans le panier !');
+
+            if (typeof data.count === 'number') {
+                this._updateBadge(data.count);
+            } else {
+                this._incrementBadgeFallback(qty);
+            }
         } catch (err) {
-            console.error(`Erreur lors de l'ajout au panier :`, err);
+            console.error(`Erreur lors de la mise à jour du panier :`, err);
             this._showFeedback('danger', 'Une erreur est survenue. Merci de réessayer.');
         } finally {
             this._setLoading(btn, false);
@@ -110,8 +122,19 @@ export default class extends Controller {
 
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-            const data = await response.json();
-            this._updateBadge(data.count);
+            const text = await response.text();
+            let data = {};
+            try {
+                data = this._safeJsonParse(text);
+            } catch (parseErr) {
+                console.warn('Réponse non JSON lors de l\'ajout rapide, utilisation du fallback.', parseErr, text);
+            }
+
+            if (typeof data.count === 'number') {
+                this._updateBadge(data.count);
+            } else {
+                this._incrementBadgeFallback(1);
+            }
 
             link.innerHTML = '<i class="fas fa-check fa-sm" aria-hidden="true"></i>';
             link.classList.replace('btn-primary', 'btn-success');
@@ -172,5 +195,27 @@ export default class extends Controller {
         } else {
             badge.classList.add('d-none');
         }
+    }
+
+    _safeJsonParse(text) {
+        try {
+            return JSON.parse(text);
+        } catch (e) {
+            const start = text.indexOf('{');
+            const end = text.lastIndexOf('}');
+            if (start !== -1 && end !== -1 && end > start) {
+                return JSON.parse(text.slice(start, end + 1));
+            }
+            throw e;
+        }
+    }
+
+    _incrementBadgeFallback(delta) {
+        const badge = document.querySelector('[data-cart-badge]');
+        if (!badge) return;
+
+        const current = parseInt(badge.textContent, 10) || 0;
+        const next = Math.max(0, current + delta);
+        this._updateBadge(next);
     }
 }

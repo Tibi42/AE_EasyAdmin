@@ -1,5 +1,5 @@
 {# Composant Carte Produit #}
-<div class="card h-100 shadow-sm border-0 product-card-hover" data-action="click->modal#open" data-name="{{ product.name }}" data-description="{{ product.description }}" data-price="{{ product.price }}" data-image="{% if product.imageName %}{{ product.imageName matches '/^https?:\\/\\//' ? product.imageName : asset('uploads/products/' ~ product.imageName) }}{% endif %}" data-add-to-cart-url="{{ path('cart_add', {id: product.id}) }}" style="cursor: pointer;">
+<div class="card h-100 shadow-sm border-0 product-card-hover" data-action="click->modal#open" data-name="{{ product.name }}" data-description="{{ product.description }}" data-price="{{ product.price }}" data-image="{% if product.imageName %}{{ product.imageName matches '/^https?:\\/\\//' ? product.imageName : asset('uploads/products/' ~ product.imageName) }}{% endif %}" data-add-to-cart-url="{{ path('cart_update', {id: product.id}) }}" style="cursor: pointer;">
 
 	<div class="ratio ratio-4x3 bg-light overflow-hidden">
 		{% if product.imageName %}

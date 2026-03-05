@@ -95,6 +95,15 @@ final class CartController extends AbstractController
         
         $cartService->setQuantity($id, $quantity);
 
+        // Réponse optimisée pour les requêtes AJAX (modale produit)
+        if ($request->isXmlHttpRequest()) {
+            return $this->json([
+                'success' => true,
+                'message' => 'Quantité mise à jour dans le panier.',
+                'count'   => $cartService->getQuantitySum(),
+            ]);
+        }
+
         return $this->redirectToRoute('cart_index');
     }
 
