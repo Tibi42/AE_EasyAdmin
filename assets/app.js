@@ -1,10 +1,12 @@
+// Point d'entrée principal de l'application JavaScript
+// Ce fichier est inclus dans les pages via la fonction Twig importmap()
+
+// Initialise les contrôleurs Stimulus
 import './stimulus_bootstrap.js';
+
+// Importe les styles et le JS de Bootstrap
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
-/*
- * Welcome to your app's main JavaScript file!
- *
- * This file will be included onto the page via the importmap() Twig function,
- * which should already be in your base.html.twig.
- */
+
+// Importe les styles globaux de l'application
 import './styles/app.css';
